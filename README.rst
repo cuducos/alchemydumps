@@ -72,7 +72,7 @@ Output:
 Install
 -------
 
-First install the package: `$ pip install flask-alchemydumps`
+First install the package: `$ pip install Flask-AlchemyDumps`
 
 Then configure it in your Flask application:
 
