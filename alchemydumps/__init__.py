@@ -156,7 +156,10 @@ def get_id(filepath):
     """
     filename = filepath.stem
     parts = filename.split('-')
-    return parts[2]
+    try:
+        return parts[2]
+    except IndexError:
+        return False
 
 
 def get_list(date_id=False, files=False):
