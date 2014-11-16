@@ -91,8 +91,9 @@ def restore(date_id):
     """Restore a backup based on the date part of the backup files"""
 
     # check if date/id is valid
-    if not date_id or date_id not in get_ids():
-        print'nope'
+    files = get_list()
+    if not date_id or date_id not in get_ids(files):
+        print '==> Not a valid date id. Use the "history" command to list existing downloads'
         return
 
     # loop through backup files
