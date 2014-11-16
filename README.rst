@@ -131,6 +131,17 @@ In sum, if your `requirements.txt` looks something like this, probably you will 
     SQLAlchemy>=0.7.9
     Unipath>=1.0
 
+**AlchemyDumps** is **not** ready for Python 3 yet (but pull requests are more than welcomed).
+
+Changelog
+---------
+
+**Version 0.0.2**
+    * Implement command to delete backups.
+    * Proper message when ID is not found in restore and delete commands.
+    * Avoid breaking the code when get_id() fails.
+    * Minor code improvements.
+
 License
 -------
 
