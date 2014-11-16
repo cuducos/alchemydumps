@@ -15,14 +15,14 @@ Considering you have these *models* (`SQLAlchemy mapped classes <http://docs.sql
 ::
 
     class User(Model):
-        id = db.Column(db.Integer, primary_key=True)
-        email = db.Column(db.String(140), index=True, unique=True)
+        id = Column(db.Integer, primary_key=True)
+        email = Column(db.String(140), index=True, unique=True)
         ...
     
     class Post(Model):
-        id = db.Column(db.Integer, primary_key=True)
-        title = db.Column(db.String(140))
-        content = db.Column(db.UnicodeText)
+        id = Column(db.Integer, primary_key=True)
+        title = Column(db.String(140))
+        content = Column(db.UnicodeText)
         ...
 
 You can **backup all your data**:
@@ -69,6 +69,23 @@ Output:
     ==> /vagrant/alchemydumps/db-bkp-20141115172107-User.gz totally restored.
     ==> /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz totally restored.
 
+If you want, you can **delete an existing backup**:
+
+::
+
+    $ python manage.py alchemydumps remove -d 20141115172107
+
+Output:
+
+::
+
+    ==> Do you want to delete the following files?'
+        /vagrant/alchemydumps/db-bkp-20141115172107-User.gz
+        /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz
+    ==> Press "Y" to confirm, or anything else to abort.
+        /vagrant/alchemydumps/db-bkp-20141115172107-User.gz deleted.
+        /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz deleted.
+
 Install
 -------
 
@@ -83,10 +100,15 @@ Then configure it in your Flask application:
     from flask.ext.script import Manager
     from flask.ext.sqlalchemy import SQLAlchemy
 
+    # init Flask
     app = Flask(__name__)
+
+    # init SQLAlchemy and Flask-Script
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     db = SQLAlchemy(app)
     manager = Manager(app)
 
+    # init Alchemy Dumps
     alchemydumps = AlchemyDumps(app, db)
     manager.add_command('alchemydumps', AlchemyDumpsCommand)
 
