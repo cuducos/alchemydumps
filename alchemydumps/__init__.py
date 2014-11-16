@@ -124,6 +124,35 @@ def restore(date_id):
                                                                          filepath.absolute())
 
 
+@AlchemyDumpsCommand.option('-d',
+                            '--date',
+                            dest='date_id',
+                            default=False, help='The date part of a file from the AlchemyDumps folder')
+def remove(date_id):
+    """Remove a series of backup files based on the date part of the files"""
+
+    # check if date/id is valid
+    files = get_list()
+    if not date_id or date_id not in get_ids(files):
+        print '==> Not a valid date id. Use the "history" command to list existing downloads'
+        return
+
+    # List files to be deleted
+    delete_list = get_list(date_id, files)
+    print '==> Do you want to delete the following files?'
+    for d in delete_list:
+        print '    {}'.format(d.absolute())
+
+    # confirm
+    confirmation = raw_input('==> Press "Y" to confirm, or anything else to abort.')
+    if confirmation.lower() == 'y':
+
+        # delete
+        for d in delete_list:
+            print '    {} deleted.'.format(d.absolute())
+            d.remove()
+
+
 def get_sa_mapped_classes(sqlalachemy_db=False):
     """
     :param sqlalachemy_db: (optional) SQLAlchemy database (if not passed, it is loaded from AlchemyDumps() instance)
