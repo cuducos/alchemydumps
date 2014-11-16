@@ -84,9 +84,9 @@ def history():
 
 
 @AlchemyDumpsCommand.option('-d',
-                         '--date',
-                         dest='date_id',
-                         default=False, help='The date part of a file from the AlchemyDumps folder')
+                            '--date',
+                            dest='date_id',
+                            default=False, help='The date part of a file from the AlchemyDumps folder')
 def restore(date_id):
     """Restore a backup based on the date part of the backup files"""
 
