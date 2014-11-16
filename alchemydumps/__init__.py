@@ -188,5 +188,8 @@ def get_ids(files=False):
     if not files:
         files = get_list()
     file_ids = list()
-    [file_ids.append(get_id(f)) for f in files if not file_ids.count(get_id(f))]
+    for f in files:
+        file_id = get_id(f)
+        if file_id and not file_ids.count(file_id):
+            file_ids.append(file_id)
     return file_ids
