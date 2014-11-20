@@ -1,5 +1,6 @@
 from setuptools import setup
 
+
 def readme():
     with open('README.rst') as f:
         return f.read()
@@ -9,14 +10,14 @@ setup(name='Flask-AlchemyDumps',
       description='SQLAlchemy backup/dump tool for Flask',
       long_description=readme(),
       classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: MIT License',
-        'Framework :: Flask',
-        'Programming Language :: Python :: 2.7',
-        'Intended Audience :: Developers',
-        'Topic :: Database',
-        'Topic :: System :: Archiving :: Backup',
-        'Topic :: Utilities'
+          'Development Status :: 3 - Alpha',
+          'License :: OSI Approved :: MIT License',
+          'Framework :: Flask',
+          'Programming Language :: Python :: 2.7',
+          'Intended Audience :: Developers',
+          'Topic :: Database',
+          'Topic :: System :: Archiving :: Backup',
+          'Topic :: Utilities'
       ],
       keywords='backup, sqlalchemy, flask, restore, dumps, serialization',
       url='https://github.com/cuducos/alchemydumps',
