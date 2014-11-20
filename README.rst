@@ -116,7 +116,7 @@ Output:
 
 ::
 
-    ==> Do you want to delete the following files?'
+    ==> Do you want to delete the following files?
         /vagrant/alchemydumps/db-bkp-20141115172107-User.gz
         /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz
     ==> Press "Y" to confirm, or anything else to abort.
