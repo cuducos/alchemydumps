@@ -268,7 +268,7 @@ In sum, if your ``requirements.txt`` looks something like this, probably you wil
 Tests
 -----
 
-If you wanna to run the tests:
+If you wanna run the tests:
 
 ::
 
