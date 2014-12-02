@@ -277,6 +277,17 @@ If you wanna run the tests:
     $ pip install nose unipath
     $ nosetests
 
+Contributing
+------------
+
+You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
+
+* Fork this repo
+* Create a new branch: ``git checkout -b my-new-feature``
+* Commit your changes: ``git add -A . && commit -m 'Add some feature'``
+* Push to the branch: ``git push origin my-new-feature``
+* And create new `pull request`
+
 Changelog
 ---------
 
