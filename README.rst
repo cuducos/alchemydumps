@@ -1,6 +1,16 @@
 AlchemyDumps
 ------------
 
+.. image:: https://pypip.in/version/Flask-AlchemyDumps/badge.svg
+    :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
+    :alt: Latest Version
+.. image:: https://pypip.in/download/Flask-AlchemyDumps/badge.svg
+    :target: https://pypi.python.org/pypi//Flask-AlchemyDumps/
+    :alt: Downloads
+.. image:: https://pypip.in/license/Flask-AlchemyDumps/badge.svg
+    :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
+    :alt: License
+
 Do you use `Flask <http://flask.pocoo.org>`_ with `SQLAlchemy <http://www.sqlalchemy.org/>`_  and `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ ? Wow, what a coincidence!
 
 This package let you backup and restore all your data using `SQLALchemy dumps() method <http://docs.sqlalchemy.org/en/latest/core/serializer.html>`_.
