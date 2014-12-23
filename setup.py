@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -24,7 +24,7 @@ setup(name='Flask-AlchemyDumps',
       author='Eduardo Cuducos',
       author_email='cuducos@gmail.com',
       license='MIT',
-      packages=['alchemydumps'],
+      packages=find_packages(exclude=["tests",]),
       install_requires=[
           'Flask',
           'Flask-Script',
