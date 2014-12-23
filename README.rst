@@ -45,7 +45,7 @@ Then configure it in your Flask application:
 
 The **first line** import the methods from the package.
 
-The **last two lines** instantiate and add AlchemyDumps to the *Flask-Script manager*).
+The **last two lines** instantiate and add AlchemyDumps to the *Flask-Script manager*.
 
 You might want to add ``alchemydumps`` to your ``.gitignore``. It is the folder where **AlchemyDumps** save the backup files.
 
@@ -284,7 +284,7 @@ If you wanna run the tests:
 
     $ git clone git@github.com:cuducos/alchemydumps.git
     $ cd /alchemydumps
-    $ pip install nose unipath
+    $ pip install nose
     $ nosetests
 
 Contributing
@@ -300,7 +300,8 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 
 Changelog
 ---------
-
+**Version 0.0.4**
+    * Fix bug in the installation process
 **Version 0.0.3**
     * New command: auto-clean backup folder.
 **Version 0.0.2**
@@ -315,3 +316,4 @@ License
 Copyright (c) 2014 Eduardo Cuducos.
 
 Licensed under the `MIT License <http://opensource.org/licenses/MIT>`_.
+
