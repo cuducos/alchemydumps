@@ -301,6 +301,8 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Changelog
 ---------
 
+**Version 0.0.4**
+    * Fix bug in the installation process.
 **Version 0.0.3**
     * New command: auto-clean backup folder.
 **Version 0.0.2**
