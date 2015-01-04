@@ -314,6 +314,6 @@ Changelog
 License
 -------
 
-Copyright (c) 2014 Eduardo Cuducos.
+Copyright (c) 2015 Eduardo Cuducos.
 
 Licensed under the `MIT License <http://opensource.org/licenses/MIT>`_.
