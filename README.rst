@@ -26,8 +26,8 @@ Then configure it in your Flask application:
 
 ::
 
-    from alchemydumps import AlchemyDumps, AlchemyDumpsCommand
     from flask import Flask
+    from flask.ext.alchemydumps import AlchemyDumps, AlchemyDumpsCommand
     from flask.ext.script import Manager
     from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -43,7 +43,7 @@ Then configure it in your Flask application:
     alchemydumps = AlchemyDumps(app, db)
     manager.add_command('alchemydumps', AlchemyDumpsCommand)
 
-The **first line** import the methods from the package.
+The **second line** import the methods from the package.
 
 The **last two lines** instantiate and add AlchemyDumps to the *Flask-Script manager*.
 
@@ -300,6 +300,8 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 
 Changelog
 ---------
+**Version 0.0.5**
+    * Use package as a Flask extension
 **Version 0.0.4**
     * Fix bug in the installation process
 **Version 0.0.3**
