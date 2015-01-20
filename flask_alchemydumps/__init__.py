@@ -31,7 +31,8 @@ class AlchemyDumps(object):
         if app is not None and db is not None:
             self.init_app(app, db, basedir)
 
-    def init_app(self, app, db, basedir=''):
+    @staticmethod
+    def init_app(app, db, basedir=''):
         if not hasattr(app, 'extensions'):
             app.extensions = {}
         app.extensions['alchemydumps'] = _AlchemyDumpsConfig(db, basedir)
@@ -55,15 +56,15 @@ def create():
     date_id = str(strftime("%Y%m%d%H%M%S", gmtime()))
     bkp_dir = get_bkp_dir()
     for k in data.keys():
-        filename = 'db-bkp-{}-{}.gz'.format(date_id, k)
-        filepath = bkp_dir.child(filename)
-        filehandler = gzip.open(filepath, 'wb')
-        filehandler.write(data[k])
-        filehandler.close()
+        file_name = 'db-bkp-{}-{}.gz'.format(date_id, k)
+        file_path = bkp_dir.child(file_name)
+        file_handler = gzip.open(file_path, 'wb')
+        file_handler.write(data[k])
+        file_handler.close()
         num_rows = len(loads(data[k], db.metadata, db.session))
         print '==> {} rows from {} saved as {}'.format(num_rows,
                                                        k,
-                                                       filepath.absolute())
+                                                       file_path.absolute())
 
 
 @AlchemyDumpsCommand.command
@@ -83,8 +84,8 @@ def history():
     output = [{'id': i, 'files': get_list(i, files)} for i in file_ids]
     for o in output:
         if len(o['files']):
-            date_transf = datetime.strptime(o['id'], '%Y%m%d%H%M%S')
-            date_format = date_transf.strftime('%b %d, %Y at %H:%M:%S')
+            date_parsed = datetime.strptime(o['id'], '%Y%m%d%H%M%S')
+            date_format = date_parsed.strftime('%b %d, %Y at %H:%M:%S')
             print '\n==> ID: {} (from {})'.format(o['id'], date_format)
             for f in o['files']:
                 print '    {}'.format(f)
@@ -94,24 +95,26 @@ def history():
 @AlchemyDumpsCommand.option('-d',
                             '--date',
                             dest='date_id',
-                            default=False, help='The date part of a file from the AlchemyDumps folder')
+                            default=False,
+                            help='The date part of a file from the AlchemyDumps\
+                                 folder')
 def restore(date_id):
     """Restore a backup based on the date part of the backup files"""
 
     # check if date/id is valid
     files = get_list()
     if not date_id or date_id not in get_ids(files):
-        print '==> Not a valid date id. Use the "history" command to list existing downloads'
-        return
+        print '==> Invalid id. Use "history" to list existing downloads'
+        return None
 
     # loop through backup files
     db = current_app.extensions['alchemydumps'].db
     for m in get_sa_mapped_classes(db):
         class_name = m.__name__
         bkp_dir = get_bkp_dir()
-        filepath = bkp_dir.child('db-bkp-{}-{}.gz'.format(date_id, class_name))
-        if filepath.exists():
-            with gzip.open(filepath, 'rb') as file_handler:
+        file_path = bkp_dir.child('db-bkp-{}-{}.gz'.format(date_id, class_name))
+        if file_path.exists():
+            with gzip.open(file_path, 'rb') as file_handler:
                 file_content = file_handler.read()
                 fails = list()
                 for row in loads(file_content, db.metadata, db.session):
@@ -124,26 +127,28 @@ def restore(date_id):
 
                 # print summary
                 status = 'partially' if len(fails) else 'totally'
-                print '==> {} {} restored.'.format(filepath, status)
+                print '==> {} {} restored.'.format(file_path, status)
                 for f in fails:
                     print '    {} failed to merge and was skipped.'.format(f)
         else:
-            print '==> No file found for {} ({} does not exist).'.format(class_name,
-                                                                         filepath.absolute())
+            msg = '==> No file found for {} ({} does not exist).'
+            print msg.format(class_name, file_path.absolute())
 
 
 @AlchemyDumpsCommand.option('-d',
                             '--date',
                             dest='date_id',
-                            default=False, help='The date part of a file from the AlchemyDumps folder')
+                            default=False,
+                            help='The date part of a file from the AlchemyDumps\
+                                 folder')
 def remove(date_id):
     """Remove a series of backup files based on the date part of the files"""
 
     # check if date/id is valid
     files = get_list(date_id)
     if not date_id or date_id not in get_ids(files):
-        print '==> Not a valid date id. Use the "history" command to list existing downloads'
-        return
+        print '==> Invalid id. Use "history" to list existing downloads'
+        return None
 
     # List files to be deleted
     delete_list = get_list(date_id, files)
@@ -152,7 +157,8 @@ def remove(date_id):
         print '    {}'.format(d.absolute())
 
     # confirm
-    confirmation = raw_input('==> Press "Y" to confirm, or anything else to abort.')
+    msg = '==> Press "Y" to confirm, or anything else to abort.'
+    confirmation = raw_input(msg)
     if confirmation.lower() == 'y':
 
         # delete
@@ -165,10 +171,10 @@ def remove(date_id):
 def autoclean():
     """
     Remove a series of backup files based on the following rules:
-    * It keeps all the backups from the last 7 days
-    * It keeps one (the most recent one) backup from each week of the last month
-    * It keeps one (the most recent one) backup from each month of the last year
-    * It keeps one (the most recent one) backup from each year of the remaining years
+    * Keeps all the backups from the last 7 days
+    * Keeps the most recent backup from each week of the last month
+    * Keeps the most recent backup from each month of the last year
+    * Keeps the most recent backup from each year of the remaining years
     """
 
     # check if there are backups
@@ -180,29 +186,30 @@ def autoclean():
 
     # get black and white list
     lists = bw_lists(date_ids)
-    if not len(lists['blacklist']):
+    if not len(lists['black_list']):
         print '==> No backup to be deleted.'
         return
 
     # print the list of files to be kept/deleted
-    blacklist = list()
-    for l in ['whitelist', 'blacklist']:
-        msg = 'kept' if l == 'whitelist' else 'deleted'
+    black_list = list()
+    for l in ['white_list', 'black_list']:
+        msg = 'kept' if l == 'white_list' else 'deleted'
         print '\n==> {} backups will be {}:'.format(len(lists[l]), msg)
         for date_id in lists[l]:
-            date_transf = datetime.strptime(date_id, '%Y%m%d%H%M%S')
-            date_format = date_transf.strftime('%b %d, %Y at %H:%M:%S')
+            date_parsed = datetime.strptime(date_id, '%Y%m%d%H%M%S')
+            date_format = date_parsed.strftime('%b %d, %Y at %H:%M:%S')
             print '\n    ID: {} (from {})'.format(date_id, date_format)
             for f in get_list(date_id, files):
                 print '    {}'.format(f)
-                if l == 'blacklist':
-                    blacklist.append(f)
+                if l == 'black_list':
+                    black_list.append(f)
 
     # confirm
-    confirmation = raw_input('\n==> Press "Y" to confirm, or anything else to abort.')
+    msg = '\n==> Press "Y" to confirm, or anything else to abort.'
+    confirmation = raw_input(msg)
     if confirmation.lower() == 'y':
 
         # delete
-        for filepath in blacklist:
-            print '    {} deleted.'.format(filepath.absolute())
-            filepath.remove()
+        for file_path in black_list:
+            print '    {} deleted.'.format(file_path.absolute())
+            file_path.remove()

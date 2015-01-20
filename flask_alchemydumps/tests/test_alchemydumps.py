@@ -1,7 +1,11 @@
 # coding: utf-8
 
-from flask.ext.alchemydumps.helpers.autoclean import bw_lists, filter_dates, get_last_month_length, get_last_year_length
-from flask.ext.alchemydumps.helpers.identification import get_id, get_ids, get_list
+from flask.ext.alchemydumps.helpers.autoclean import (
+    bw_lists, filter_dates, get_last_month_length, get_last_year_length
+)
+from flask.ext.alchemydumps.helpers.identification import (
+    get_id, get_ids, get_list
+)
 from datetime import date
 from unipath import Path
 from unittest import TestCase
@@ -10,8 +14,8 @@ from unittest import TestCase
 class TestAlchemyDumps(TestCase):
 
     def test_get_id(self):
-        filepath = Path('/vagrant/alchemydumps/db-bkp-20141115172107-User.gz')
-        assert get_id(filepath) == '20141115172107'
+        file_path = Path('/vagrant/alchemydumps/db-bkp-20141115172107-User.gz')
+        assert get_id(file_path) == '20141115172107'
 
     def test_get_list(self):
         date_ids = ['20141115172107', '20141112113214']
@@ -21,7 +25,10 @@ class TestAlchemyDumps(TestCase):
         for i in date_ids:
             for m in models:
                 files.append(Path('{}db-bkp-{}-{}.gz'.format(prefix, i, m)))
-        expected = [Path('{}db-bkp-{}-{}.gz'.format(prefix, date_ids[0], m)) for m in models]
+        expected = list()
+        for m in models:
+            path = '{}db-bkp-{}-{}.gz'
+            expected.append(Path(path.format(prefix, date_ids[0], m)))
         assert get_list(date_ids[0], files) == expected
 
     def test_get_ids(self):
@@ -64,7 +71,7 @@ class TestAlchemyDumps(TestCase):
             '20090111042034',
             '20100112115416'
         ]
-        whitelist = [
+        white_list = [
             '20140425202739',
             '20130808133229',
             '20120419224811',
@@ -75,7 +82,7 @@ class TestAlchemyDumps(TestCase):
             '20060519170013',
             '20050413201344'
         ]
-        blacklist = [
+        black_list = [
             '20130729044443',
             '20120111210958',
             '20110824045557',
@@ -88,8 +95,8 @@ class TestAlchemyDumps(TestCase):
             '20060505063150'
         ]
         lists = bw_lists(date_ids)
-        assert sorted(lists['whitelist']) == sorted(whitelist)
-        assert sorted(lists['blacklist']) == sorted(blacklist)
+        assert sorted(lists['white_list']) == sorted(white_list)
+        assert sorted(lists['black_list']) == sorted(black_list)
 
     def test_filter_dates(self):
         dates_w = ['20141120000000', '20141119000000']

@@ -5,8 +5,8 @@ from datetime import date, datetime, timedelta
 
 def bw_lists(dates):
     """
-    :param dates: list of diferent date ids from existing backups
-    :return: dictionary with a whitelist and a blacklist (backups to be deleted)
+    :param dates: list of different date ids from existing backups
+    :return: dictionary with white (to be kept) and black (to be deleted) list
     """
 
     # get key dates
@@ -19,30 +19,30 @@ def bw_lists(dates):
     last_y = (today + timedelta(days=last_y_len))
 
     # create lists for each time period
-    bkps_week = list()
-    bkps_month = list()
-    bkps_year = list()
-    bkps_older = list()
+    backups_week = list()
+    backups_month = list()
+    backups_year = list()
+    backups_older = list()
     for i in range(0, len(dates)):
         d = datetime.strptime(dates[i], '%Y%m%d%H%M%S')
         if d >= last_w:
-            bkps_week.append(dates[i])
+            backups_week.append(dates[i])
         elif d >= last_m:
-            bkps_month.append(dates[i])
+            backups_month.append(dates[i])
         elif d >= last_y:
-            bkps_year.append(dates[i])
+            backups_year.append(dates[i])
         else:
-            bkps_older.append(dates[i])
+            backups_older.append(dates[i])
 
     # include all backups
-    whitelist = bkps_week
-    whitelist = whitelist + filter_dates(bkps_month, 'week')
-    whitelist = whitelist + filter_dates(bkps_year, 'month')
-    whitelist = whitelist + filter_dates(bkps_older, 'year')
+    white_list = backups_week
+    white_list = white_list + filter_dates(backups_month, 'week')
+    white_list = white_list + filter_dates(backups_year, 'month')
+    white_list = white_list + filter_dates(backups_older, 'year')
 
     # return
-    blacklist = sorted(list(set(dates) - set(whitelist)), reverse=True)
-    return {'whitelist': whitelist, 'blacklist': blacklist}
+    black_list = sorted(list(set(dates) - set(white_list)), reverse=True)
+    return {'white_list': white_list, 'black_list': black_list}
 
 
 # helpers functions
