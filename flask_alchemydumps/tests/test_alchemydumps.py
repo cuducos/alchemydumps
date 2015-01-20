@@ -1,7 +1,7 @@
 # coding: utf-8
 
-from alchemydumps.helpers.autoclean import bw_lists, filter_dates, get_last_month_length, get_last_year_length
-from alchemydumps.helpers.identification import get_id, get_ids, get_list
+from flask.ext.alchemydumps.helpers.autoclean import bw_lists, filter_dates, get_last_month_length, get_last_year_length
+from flask.ext.alchemydumps.helpers.identification import get_id, get_ids, get_list
 from datetime import date
 from unipath import Path
 from unittest import TestCase
@@ -36,11 +36,11 @@ class TestAlchemyDumps(TestCase):
 
     def test_get_last_month_length(self):
         march2012 = date(2012, 3, 1)
-        assert get_last_month_length(march2012) == 29
+        assert get_last_month_length(march2012) == -29
 
     def test_get_last_year_length(self):
         march2013 = date(2013, 3, 1)
-        assert get_last_year_length(march2013) == 366
+        assert get_last_year_length(march2013) == -366
 
     def test_bw_lists(self):
         date_ids = [
