@@ -141,7 +141,12 @@ def restore(date_id):
                             default=False,
                             help='The date part of a file from the AlchemyDumps\
                                  folder')
-def remove(date_id):
+@AlchemyDumpsCommand.option('-y',
+                            '--yes-for-all',
+                            dest='yes_for_all',
+                            default=False,
+                            help='Assume `yes` for all prompts')
+def remove(date_id, yes_for_all=False):
     """Remove a series of backup files based on the date part of the files"""
 
     # check if date/id is valid
@@ -157,18 +162,28 @@ def remove(date_id):
         print '    {}'.format(d.absolute())
 
     # confirm
-    msg = '==> Press "Y" to confirm, or anything else to abort.'
-    confirmation = raw_input(msg)
-    if confirmation.lower() == 'y':
+    confirmed = False
+    if yes_for_all:
+        confirmed = True
+    else:
+        msg = '==> Press "Y" to confirm, or anything else to abort.'
+        confirmation = raw_input(msg)
+        if confirmation.lower() == 'y':
+            confirmed = True
 
-        # delete
+    # delete
+    if confirmed:
         for d in delete_list:
             print '    {} deleted.'.format(d.absolute())
             d.remove()
 
 
-@AlchemyDumpsCommand.command
-def autoclean():
+@AlchemyDumpsCommand.option('-y',
+                            '--yes-for-all',
+                            dest='yes_for_all',
+                            default=False,
+                            help='Assume `yes` for all prompts')
+def autoclean(yes_for_all=False):
     """
     Remove a series of backup files based on the following rules:
     * Keeps all the backups from the last 7 days
@@ -205,11 +220,17 @@ def autoclean():
                     black_list.append(f)
 
     # confirm
-    msg = '\n==> Press "Y" to confirm, or anything else to abort.'
-    confirmation = raw_input(msg)
-    if confirmation.lower() == 'y':
+    confirmed = False
+    if yes_for_all:
+        confirmed = True
+    else:
+        msg = '\n==> Press "Y" to confirm, or anything else to abort.'
+        confirmation = raw_input(msg)
+        if confirmation.lower() == 'y':
+            confirmed = True
 
-        # delete
+    # delete
+    if confirmed:
         for file_path in black_list:
             print '    {} deleted.'.format(file_path.absolute())
             file_path.remove()

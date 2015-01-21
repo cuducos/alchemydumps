@@ -284,7 +284,8 @@ If you wanna run the tests:
 
     $ git clone git@github.com:cuducos/alchemydumps.git
     $ cd /alchemydumps
-    $ pip install nose
+    $ pip install -r tests/requirements.txt
+    $ python setup.py develop
     $ nosetests
 
 Contributing
@@ -302,6 +303,7 @@ Changelog
 ---------
 **Version 0.0.5**
     * Use package as a Flask extension
+    * Built-in Flask app for complete tests
 **Version 0.0.4**
     * Fix bug in the installation process
 **Version 0.0.3**

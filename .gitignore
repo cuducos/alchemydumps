@@ -2,14 +2,24 @@
 *.pyc
 
 # Setuptools distribution folder.
-/dist/
+/dist
+/build
 
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
 /*.egg
 
-# requirements
-requirements.txt
+# tests environment
+.coverage
+cover/
+*.db
+
+# dev environment
+.env
+.floo
+.flooignore
+.idea
+.ropeproject
 
 # other system, editor and ide files
 *.*~
@@ -18,16 +28,9 @@ requirements.txt
 *~
 .DS_Store
 .DS_Store?
-.env
-.floo
-.flooignore
-.idea
-.ropeproject
 .Spotlight-V100
 .Trashes
 .vagrant
 ._*
 ehthumbs.db
 Thumbs.db
-Vagrantfile
-Vagrant.sh
