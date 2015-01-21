@@ -302,10 +302,10 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Changelog
 ---------
 **Version 0.0.5**
-    * Use package as a Flask extension
-    * Built-in Flask app for complete tests
+    * Use package as a Flask extension.
+    * Built-in Flask app for complete tests.
 **Version 0.0.4**
-    * Fix bug in the installation process
+    * Fix bug in the installation process.
 **Version 0.0.3**
     * New command: auto-clean backup folder.
 **Version 0.0.2**
@@ -317,7 +317,7 @@ Changelog
 License
 -------
 
-Copyright (c) 2014 Eduardo Cuducos.
+Copyright (c) 2015 Eduardo Cuducos.
 
 Licensed under the `MIT License <http://opensource.org/licenses/MIT>`_.
 
