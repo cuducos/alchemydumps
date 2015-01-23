@@ -15,7 +15,9 @@ Do you use `Flask <http://flask.pocoo.org>`_ with `SQLAlchemy <http://www.sqlalc
 
 This package let you backup and restore all your data using `SQLALchemy dumps() method <http://docs.sqlalchemy.org/en/latest/core/serializer.html>`_.
 
-It is an easy way (one singe command, I mean it) to save **all** the data stored in your database.
+It is an easy way (one singe command, I mean it) to save **all** the data stored in your database.
+
+You can save it locally or in a remote server via FTP.
 
 Install
 -------
@@ -48,6 +50,17 @@ The **second line** import the methods from the package.
 The **last two lines** instantiate and add AlchemyDumps to the *Flask-Script manager*.
 
 You might want to add ``alchemydumps`` to your ``.gitignore``. It is the folder where **AlchemyDumps** save the backup files.
+
+If you want to save your backups in a remote server via FTP, just make sure to set these environment variables replacing the placeholder information with the proper credentials:
+
+::
+
+    ALCHEMYDUMPS_FTP_SERVER = 'ftp.server.com'
+    ALCHEMYDUMPS_FTP_USER = 'johndoe'
+    ALCHEMYDUMPS_FTP_PASSWORD = 'secret' 
+    ALCHEMYDUMPS_FTP_PATH = '/absolute/path/' 
+
+If you want, there is a ``.env.sample`` inside the ``/tests`` folder. Just copy it to your application root folder as ``.env`` and insert your credentials.  
 
 Examples
 --------
@@ -288,6 +301,8 @@ If you wanna run the tests:
     $ python setup.py develop
     $ nosetests
 
+If you wnat to include remote (FTP) tests you have to rename ``/tests/.env.sample`` to ``/tests/.env`` and edit it with valid FTP credentials.
+
 Contributing
 ------------
 
@@ -325,4 +340,3 @@ License
 Copyright (c) 2015 Eduardo Cuducos.
 
 Licensed under the `MIT License <http://opensource.org/licenses/MIT>`_.
-
