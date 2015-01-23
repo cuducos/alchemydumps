@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from .app import app, db, Post, User
-from flask.ext.alchemydumps.helpers.sqlalchemy import get_sa_mapped_classes
+from flask.ext.alchemydumps.helpers.database import AlchemyDumpsDatabase
 from unittest import TestCase
 
 
@@ -17,7 +17,9 @@ class TestSQLAlchemyHelper(TestCase):
         db_file.remove()
 
     def test_mapped_classes(self):
-        classes = get_sa_mapped_classes(self.db)
-        self.assertIn(User, classes)
-        self.assertIn(Post, classes)
-        self.assertEqual(len(classes), 2)
+        with app.app_context():
+            alchemy = AlchemyDumpsDatabase()
+            classes = alchemy.get_mapped_classes()
+            self.assertIn(User, classes)
+            self.assertIn(Post, classes)
+            self.assertEqual(len(classes), 2)
