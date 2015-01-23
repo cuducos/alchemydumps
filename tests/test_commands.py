@@ -81,7 +81,7 @@ class TestCommands(TestCase):
             self.assertEqual(post.author.email, 'me@example.etc')
 
             # remove backup
-            command = 'python tests/app.py alchemydumps remove -d {} -y True'
+            command = 'python tests/app.py alchemydumps remove -d {} -y'
             os.system(command.format(date_id[0]))
 
             # assert there is no backup left
@@ -127,7 +127,7 @@ class TestCommands(TestCase):
             self.assertEqual(len(backup.files), expected_count)
 
             # run auto clean
-            os.system('python tests/app.py alchemydumps autoclean -y True')
+            os.system('python tests/app.py alchemydumps autoclean -y')
 
             # assert some files were deleted
             backup = Backup()

@@ -1,9 +1,9 @@
 # coding: utf-8
 
 
-def confirm(yes_to_all=False):
+def confirm(assume_yes=False):
     confirmed = False
-    if yes_to_all:
+    if assume_yes:
         return True
     else:
         message = '\n==> Press "Y" to confirm, or anything else to abort: '

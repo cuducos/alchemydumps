@@ -132,11 +132,12 @@ def restore(date_id):
                             help='The date part of a file from the AlchemyDumps\
                                  folder')
 @AlchemyDumpsCommand.option('-y',
-                            '--yes-for-all',
-                            dest='yes_to_all',
+                            '--assume-yes',
+                            dest='assume_yes',
+                            action='store_true',
                             default=False,
                             help='Assume `yes` for all prompts')
-def remove(date_id, yes_to_all=False):
+def remove(date_id, assume_yes=False):
     """Remove a series of backup files based on the date part of the files"""
 
     # check if date/id is valid
@@ -150,7 +151,7 @@ def remove(date_id, yes_to_all=False):
             print '    {}{}'.format(backup.path, name)
 
         # delete
-        if confirm(yes_to_all):
+        if confirm(assume_yes):
             for name in delete_list:
                 backup.delete_file(name)
                 print '    {} deleted.'.format(name)
@@ -158,11 +159,12 @@ def remove(date_id, yes_to_all=False):
 
 
 @AlchemyDumpsCommand.option('-y',
-                            '--yes-for-all',
-                            dest='yes_to_all',
+                            '--assume-yes',
+                            dest='assume_yes',
+                            action='store_true',
                             default=False,
                             help='Assume `yes` for all prompts')
-def autoclean(yes_to_all=False):
+def autoclean(assume_yes=False):
     """
     Remove a series of backup files based on the following rules:
     * Keeps all the backups from the last 7 days
@@ -197,7 +199,7 @@ def autoclean(yes_to_all=False):
                     black_list.append(f)
 
     # delete
-    if confirm(yes_to_all):
+    if confirm(assume_yes):
         for name in black_list:
             backup.delete_file(name)
             print '    {} deleted.'.format(name)
