@@ -9,13 +9,11 @@ from time import gmtime, strftime
 from flask import current_app
 from flask.ext.script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
-from sqlalchemy.ext.serializer import dumps, loads
 from unipath import Path
 
 # import alchemydumps helpers
 from helpers.autoclean import bw_lists
-from helpers.identification import get_bkp_dir, get_ids, get_list
-from helpers.sqlalchemy import get_sa_mapped_classes
+from helpers.database import AlchemyDumpsDatabase
 
 
 class _AlchemyDumpsConfig(object):
@@ -45,13 +43,6 @@ AlchemyDumpsCommand = Manager(usage='Backup and restore full SQL database')
 def create():
     """Create a backup based on SQLAlchemy mapped classes"""
 
-    # query for data
-    db = current_app.extensions['alchemydumps'].db
-    data = dict()
-    for m in get_sa_mapped_classes(db):
-        query = db.session.query(m)
-        data[m.__name__] = dumps(query.all())
-
     # create backup files
     date_id = str(strftime("%Y%m%d%H%M%S", gmtime()))
     bkp_dir = get_bkp_dir()
@@ -65,6 +56,8 @@ def create():
         print '==> {} rows from {} saved as {}'.format(num_rows,
                                                        k,
                                                        file_path.absolute())
+    alchemy = AlchemyDumpsDatabase()
+    data = alchemy.get_data()
 
 
 @AlchemyDumpsCommand.command
@@ -106,10 +99,9 @@ def restore(date_id):
     if not date_id or date_id not in get_ids(files):
         print '==> Invalid id. Use "history" to list existing downloads'
         return None
+    alchemy = AlchemyDumpsDatabase()
+        for mapped_class in alchemy.get_mapped_classes():
 
-    # loop through backup files
-    db = current_app.extensions['alchemydumps'].db
-    for m in get_sa_mapped_classes(db):
         class_name = m.__name__
         bkp_dir = get_bkp_dir()
         file_path = bkp_dir.child('db-bkp-{}-{}.gz'.format(date_id, class_name))
@@ -117,7 +109,10 @@ def restore(date_id):
             with gzip.open(file_path, 'rb') as file_handler:
                 file_content = file_handler.read()
                 fails = list()
-                for row in loads(file_content, db.metadata, db.session):
+
+                # restore to the db
+                db = alchemy.db()
+                for row in alchemy.parse_data(contents):
                     try:
                         db.session.merge(row)
                         db.session.commit()
