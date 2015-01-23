@@ -8,7 +8,7 @@ def readme():
         return f.read()
 
 setup(name='Flask-AlchemyDumps',
-      version='0.0.5',
+      version='0.0.6',
       description='SQLAlchemy backup/dump tool for Flask',
       long_description=readme(),
       classifiers=[

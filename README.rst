@@ -323,6 +323,10 @@ Thanks `Kirill Sumorokov <https://github.com/clayman74>`_ and `spikergit1 <https
 
 Changelog
 ---------
+
+**Version 0.0.6**
+    * Remote backup/restore via FTP.
+    * Code improvements.
 **Version 0.0.5**
     * Use package as a Flask extension.
     * Built-in Flask app for complete tests.
