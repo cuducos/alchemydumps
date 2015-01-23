@@ -2,13 +2,12 @@
 
 
 def confirm(yes_to_all=False):
-    message = '==> Press "Y" to confirm, or anything else to abort:'
     confirmed = False
     if yes_to_all:
         return True
     else:
-        msg = '\n==> {} '.format(message)
-        confirmation = raw_input(msg)
+        message = '\n==> Press "Y" to confirm, or anything else to abort: '
+        confirmation = raw_input(message)
         if confirmation.lower() == 'y':
             confirmed = True
     return confirmed
