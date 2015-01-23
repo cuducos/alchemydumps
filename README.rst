@@ -299,6 +299,11 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 * Push to the branch: ``git push origin my-new-feature``
 * And create new `pull request`
 
+Contributors
+------------
+
+Thanks `Kirill Sumorokov <https://github.com/clayman74>`_ and `spikergit1 <https://github.com/spikergit1>`_ for the pull requests, issues reported, feedback and support.
+
 Changelog
 ---------
 **Version 0.0.5**
