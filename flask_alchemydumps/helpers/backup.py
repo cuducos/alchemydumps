@@ -78,9 +78,11 @@ class Backup(object):
         return [f for f in self.files if date_id == self.__get_id(f)]
 
     @staticmethod
-    def create_id():
-        """Creates a numeric timestamp ID"""
-        return str(strftime("%Y%m%d%H%M%S", gmtime()))
+    def create_id(reference=False):
+        """Creates a numeric timestamp ID from a datetime"""
+        if not reference:
+            reference = gmtime()
+        return str(strftime("%Y%m%d%H%M%S", reference))
 
     def get_ids(self):
         """Gets the different existing timestamp numeric IDs"""
