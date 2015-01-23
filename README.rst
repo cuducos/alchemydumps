@@ -124,8 +124,8 @@ Output:
 
 ::
 
-    ==> /vagrant/alchemydumps/db-bkp-20141115172107-User.gz totally restored.
-    ==> /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz totally restored.
+    ==> db-bkp-20141115172107-User.gz totally restored.
+    ==> db-bkp-20141115172107-Post.gz totally restored.
 
 
 You can delete an existing backup
@@ -142,9 +142,9 @@ Output:
     ==> Do you want to delete the following files?
         /vagrant/alchemydumps/db-bkp-20141115172107-User.gz
         /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz
-    ==> Press "Y" to confirm, or anything else to abort.
-        /vagrant/alchemydumps/db-bkp-20141115172107-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz deleted.
+    ==> Press "Y" to confirm, or anything else to abort: y
+        db-bkp-20141115172107-User.gz deleted.
+        db-bkp-20141115172107-Post.gz deleted.
 
 
 And you can use the auto-clean command
@@ -246,28 +246,30 @@ Output:
         /vagrant/alchemydumps/db-bkp-20050324012859-Post.gz
 
     ==> Press "Y" to confirm, or anything else to abort.
-        /vagrant/alchemydumps/db-bkp-20120123032442-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20120123032442-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20101029100412-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20101029100412-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20100526185156-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20100526185156-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20100423085529-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20100423085529-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20081006074458-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20081006074458-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080429210254-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080429210254-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080424043716-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080424043716-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080405110244-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20080405110244-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20060629054914-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20060629054914-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20060329020048-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20060329020048-Post.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20050324012859-User.gz deleted.
-        /vagrant/alchemydumps/db-bkp-20050324012859-Post.gz deleted.
+        db-bkp-20120123032442-User.gz deleted.
+        db-bkp-20120123032442-Post.gz deleted.
+        db-bkp-20101029100412-User.gz deleted.
+        db-bkp-20101029100412-Post.gz deleted.
+        db-bkp-20100526185156-User.gz deleted.
+        db-bkp-20100526185156-Post.gz deleted.
+        db-bkp-20100423085529-User.gz deleted.
+        db-bkp-20100423085529-Post.gz deleted.
+        db-bkp-20081006074458-User.gz deleted.
+        db-bkp-20081006074458-Post.gz deleted.
+        db-bkp-20080429210254-User.gz deleted.
+        db-bkp-20080429210254-Post.gz deleted.
+        db-bkp-20080424043716-User.gz deleted.
+        db-bkp-20080424043716-Post.gz deleted.
+        db-bkp-20080405110244-User.gz deleted.
+        db-bkp-20080405110244-Post.gz deleted.
+        db-bkp-20060629054914-User.gz deleted.
+        db-bkp-20060629054914-Post.gz deleted.
+        db-bkp-20060329020048-User.gz deleted.
+        db-bkp-20060329020048-Post.gz deleted.
+        db-bkp-20050324012859-User.gz deleted.
+        db-bkp-20050324012859-Post.gz deleted.
+
+
 
 Requirements
 ------------
