@@ -8,6 +8,7 @@ from unipath import Path
 # import alchemydumps helpers
 from helpers.autoclean import bw_lists
 from helpers.backup import Backup
+from helpers.confirm import confirm
 from helpers.database import AlchemyDumpsDatabase
 
 
@@ -132,45 +133,36 @@ def restore(date_id):
                                  folder')
 @AlchemyDumpsCommand.option('-y',
                             '--yes-for-all',
-                            dest='yes_for_all',
+                            dest='yes_to_all',
                             default=False,
                             help='Assume `yes` for all prompts')
-def remove(date_id, yes_for_all=False):
+def remove(date_id, yes_to_all=False):
     """Remove a series of backup files based on the date part of the files"""
 
     # check if date/id is valid
     backup = Backup()
     if backup.valid(date_id):
 
-    # confirm
-    confirmed = False
-    if yes_for_all:
-        confirmed = True
-    else:
-        msg = '==> Press "Y" to confirm, or anything else to abort.'
-        confirmation = raw_input(msg)
-        if confirmation.lower() == 'y':
-            confirmed = True
-
-    # delete
-    if confirmed:
-        for d in delete_list:
-            print '    {} deleted.'.format(d.absolute())
-            d.remove()
         # List files to be deleted
         delete_list = backup.filter_files(date_id)
         print '==> Do you want to delete the following files?'
         for name in delete_list:
             print '    {}{}'.format(backup.path, name)
 
+        # delete
+        if confirm(yes_to_all):
+            for name in delete_list:
+                backup.delete_file(name)
+                print '    {} deleted.'.format(name)
     backup.close_connection()
+
 
 @AlchemyDumpsCommand.option('-y',
                             '--yes-for-all',
-                            dest='yes_for_all',
+                            dest='yes_to_all',
                             default=False,
                             help='Assume `yes` for all prompts')
-def autoclean(yes_for_all=False):
+def autoclean(yes_to_all=False):
     """
     Remove a series of backup files based on the following rules:
     * Keeps all the backups from the last 7 days
@@ -197,26 +189,16 @@ def autoclean(yes_for_all=False):
         msg = 'kept' if l == 'white_list' else 'deleted'
         print '\n==> {} backups will be {}:'.format(len(lists[l]), msg)
         for date_id in lists[l]:
-            date_parsed = datetime.strptime(date_id, '%Y%m%d%H%M%S')
-            date_format = date_parsed.strftime('%b %d, %Y at %H:%M:%S')
-            print '\n    ID: {} (from {})'.format(date_id, date_format)
-            for f in get_list(date_id, files):
-                print '    {}'.format(f)
+            date_formated = backup.parsed_id(date_id)
+            print '\n    ID: {} (from {})'.format(date_id, date_formated)
+            for f in backup.filter_files(date_id):
+                print '    {}{}'.format(backup.path, f)
                 if l == 'black_list':
                     black_list.append(f)
 
-    # confirm
-    confirmed = False
-    if yes_for_all:
-        confirmed = True
-    else:
-        msg = '\n==> Press "Y" to confirm, or anything else to abort.'
-        confirmation = raw_input(msg)
-        if confirmation.lower() == 'y':
-            confirmed = True
-
     # delete
-    if confirmed:
-        for file_path in black_list:
-            print '    {} deleted.'.format(file_path.absolute())
-            file_path.remove()
+    if confirm(yes_to_all):
+        for name in black_list:
+            backup.delete_file(name)
+            print '    {} deleted.'.format(name)
+    backup.close_connection()
