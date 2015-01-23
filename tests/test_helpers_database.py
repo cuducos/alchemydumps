@@ -23,3 +23,35 @@ class TestSQLAlchemyHelper(TestCase):
             self.assertIn(User, classes)
             self.assertIn(Post, classes)
             self.assertEqual(len(classes), 2)
+
+    def test_get_and_parse_data(self):
+        with app.app_context():
+
+            # control data
+            user = User(email=u'me@example.etc')
+            post1 = Post(title=u'Post 1', content=u'Lorem...', author_id=1)
+            post2 = Post(title=u'Post 2', content=u'Ipsum...', author_id=1)
+
+            # feed user table
+            self.db.session.add(user)
+            self.db.session.commit()
+
+            # feed post table
+            self.db.session.add(post1)
+            self.db.session.add(post2)
+            self.db.session.commit()
+
+            # get data
+            alchemy = AlchemyDumpsDatabase()
+            data = alchemy.get_data()
+
+            # parse data
+            parsed_user = alchemy.parse_data(data['User'])
+            parsed_posts = alchemy.parse_data(data['Post'])
+
+            # assert
+            self.assertEqual(len(parsed_user), 1)
+            self.assertEqual(len(parsed_posts), 2)
+            self.assertEqual(user.email, parsed_user[0].email)
+            self.assertEqual(post1.title, parsed_posts[0].title)
+            self.assertEqual(post2.content, parsed_posts[1].content)
