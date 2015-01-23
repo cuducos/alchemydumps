@@ -56,16 +56,16 @@ Considering you have these *models* (`SQLAlchemy mapped classes <http://docs.sql
 
 ::
 
-    class User(Model):
-        id = Column(Integer, primary_key=True)
-        email = Column(String(140), index=True, unique=True)
-        ...
-    
-    class Post(Model):
-        id = Column(Integer, primary_key=True)
-        title = Column(String(140))
-        content = Column(UnicodeText)
-        ...
+    class User(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        email = db.Column(db.String(140), index=True, unique=True)
+        posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    class Post(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        title = db.Column(db.String(140))
+        content = db.Column(db.UnicodeText)
+        author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 You can backup all your data
@@ -259,7 +259,7 @@ Output:
 Requirements
 ------------
 
-As **AlchemyDumps** was designed to work together with `Flask <http://flask.pocoo.org>`_ applications that uses `SQLAlchemy <http://www.sqlalchemy.org/>`_. And it runs within the `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ manager. Thus, be sure to have these packages installed and in use.
+**AlchemyDumps** was designed to work together with `Flask <http://flask.pocoo.org>`_ applications that uses `SQLAlchemy <http://www.sqlalchemy.org/>`_,  snd it runs through the `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ manager. Thus, be sure to have these packages installed and in use.
 
 **AlchemyDumps** also uses `Unipath <https://github.com/mikeorr/Unipath>`_ package.
 

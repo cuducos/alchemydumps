@@ -98,3 +98,4 @@ def filter_dates(dates, period):
             output.append(dates[i])
             control = comparison
     return output
+

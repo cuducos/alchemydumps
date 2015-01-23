@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from setuptools import setup, find_packages
 
 
@@ -19,7 +21,7 @@ setup(name='Flask-AlchemyDumps',
           'Topic :: System :: Archiving :: Backup',
           'Topic :: Utilities'
       ],
-      keywords='backup, sqlalchemy, flask, restore, dumps, serialization',
+      keywords='backup, sqlalchemy, flask, restore, dumps, serialization, ftp',
       url='https://github.com/cuducos/alchemydumps',
       author='Eduardo Cuducos',
       author_email='cuducos@gmail.com',
