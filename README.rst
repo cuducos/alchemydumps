@@ -13,7 +13,7 @@ AlchemyDumps
 
 Do you use `Flask <http://flask.pocoo.org>`_ with `SQLAlchemy <http://www.sqlalchemy.org/>`_  and `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ ? Wow, what a coincidence!
 
-This package let you backup and restore all your data using `SQLALchemy dumps() method <http://docs.sqlalchemy.org/en/latest/core/serializer.html>`_.
+This package lets you backup and restore all your data using `SQLALchemy dumps() method <http://docs.sqlalchemy.org/en/latest/core/serializer.html>`_.
 
 It is an easy way (one singe command, I mean it) to save **all** the data stored in your database.
 
@@ -24,7 +24,7 @@ Install
 
 First install the package: ``$ pip install Flask-AlchemyDumps``
 
-Then configure it in your Flask application:
+Then pass your Flask application and SQLALchemy database to it:
 
 ::
 
@@ -45,11 +45,10 @@ Then configure it in your Flask application:
     alchemydumps = AlchemyDumps(app, db)
     manager.add_command('alchemydumps', AlchemyDumpsCommand)
 
-The **second line** import the methods from the package.
+* The *second line* imports the objects from the package.
+* The *last two lines* instantiate and add AlchemyDumps to the *Flask-Script manager*.
 
-The **last two lines** instantiate and add AlchemyDumps to the *Flask-Script manager*.
-
-You might want to add ``alchemydumps`` to your ``.gitignore``. It is the folder where **AlchemyDumps** save the backup files.
+**Remote backup (via FTP)**
 
 If you want to save your backups in a remote server via FTP, just make sure to set these environment variables replacing the placeholder information with the proper credentials:
 
@@ -60,12 +59,16 @@ If you want to save your backups in a remote server via FTP, just make sure to s
     ALCHEMYDUMPS_FTP_PASSWORD = 'secret' 
     ALCHEMYDUMPS_FTP_PATH = '/absolute/path/' 
 
-If you want, there is a ``.env.sample`` inside the ``/tests`` folder. Just copy it to your application root folder as ``.env`` and insert your credentials.  
+If you want, there is a ``.env.sample`` inside the ``/tests`` folder. Just copy it to your application root folder, rename it to ``.env``, and insert your credentials.
+
+**.gitignore**
+
+You might want to add ``alchemydumps`` to your ``.gitignore``. It is the folder where **AlchemyDumps** save the backup files.
 
 Examples
 --------
 
-Considering you have these *models* (`SQLAlchemy mapped classes <http://docs.sqlalchemy.org/en/latest/orm/mapper_config.html>`_):
+Considering you have these *models* (that is to say, these `SQLAlchemy mapped classes <http://docs.sqlalchemy.org/en/latest/orm/mapper_config.html>`_):
 
 ::
 
@@ -92,7 +95,7 @@ Output:
 
 ::
 
-    ==> 3 rows from User post saved as /vagrant/alchemydumps/db-bkp-20141115172107-User.gz
+    ==> 3 rows from User saved as /vagrant/alchemydumps/db-bkp-20141115172107-User.gz
     ==> 42 rows from Post saved as /vagrant/alchemydumps/db-bkp-20141115172107-Post.gz
 
 You can list the backups you have already created
@@ -155,7 +158,7 @@ The ``autoclean`` command follows these rules to delete backups:
 * It keeps **all** the backups from the last 7 days.
 * It keeps **the most recent** backup **from each week of the last month**.
 * It keeps **the most recent** backup **from each month of the last year**.
-* It keeps **the most recent** backup **from each year** of the remaining years.
+* It keeps **the most recent** backup **from each remaining year**.
 
 ::
 
@@ -245,7 +248,7 @@ Output:
         /vagrant/alchemydumps/db-bkp-20050324012859-User.gz
         /vagrant/alchemydumps/db-bkp-20050324012859-Post.gz
 
-    ==> Press "Y" to confirm, or anything else to abort.
+    ==> Press "Y" to confirm, or anything else to abort. y
         db-bkp-20120123032442-User.gz deleted.
         db-bkp-20120123032442-Post.gz deleted.
         db-bkp-20101029100412-User.gz deleted.
@@ -271,24 +274,12 @@ Output:
 
 
 
-Requirements
-------------
+Requirements & Dependencies
+---------------------------
 
-**AlchemyDumps** was designed to work together with `Flask <http://flask.pocoo.org>`_ applications that uses `SQLAlchemy <http://www.sqlalchemy.org/>`_,  snd it runs through the `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ manager. Thus, be sure to have these packages installed and in use.
+**AlchemyDumps** `not` ready for Python 3 – but pull requests are more than welcomed.
 
-**AlchemyDumps** also uses `Unipath <https://github.com/mikeorr/Unipath>`_ package.
-
-In sum, if your ``requirements.txt`` looks something like this, probably you will be fine:
-
-::
-
-    Flask>=0.10.1
-    Flask-Script>=2.0.5
-    Flask-SQLAlchemy>=0.16
-    SQLAlchemy>=0.7.9
-    Unipath>=1.0
-
-**AlchemyDumps** is `not` ready for Python 3 yet – but pull requests are more than welcomed.
+**AlchemyDumps** was designed to work together with `Flask <http://flask.pocoo.org>`_ applications that uses `SQLAlchemy <http://www.sqlalchemy.org/>`_. It runs through the `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ manager. Thus, these packages are essential requirements. **AlchemyDumps** also uses `Unipath <https://github.com/mikeorr/Unipath>`_ package. All these packages, if needed, will be installed once you install **AlchemyDumps**.
 
 Tests
 -----
@@ -320,24 +311,23 @@ Contributors
 ------------
 
 Thanks `Kirill Sumorokov <https://github.com/clayman74>`_ and `spikergit1 <https://github.com/spikergit1>`_ for the pull requests, issues reported, feedback and support.
-
 Changelog
 ---------
 
 **Version 0.0.6**
     * Remote backup/restore via FTP.
-    * Code improvements.
+    * General code improvements.
 **Version 0.0.5**
-    * Use package as a Flask extension.
-    * Built-in Flask app for complete tests.
+    * Re-written as a Flask extension.
+    * Built-in Flask app within the test suite.
 **Version 0.0.4**
     * Fix bug in the installation process.
 **Version 0.0.3**
-    * New command: auto-clean backup folder.
+    * New command to auto-clean backup folder.
 **Version 0.0.2**
     * New command: delete a single backup.
     * Proper message when ID is not found in restore and delete commands.
-    * Avoid breaking the code when get_id() fails.
+    * Avoid breaking the process when get_id() fails.
     * Minor code improvements.
 
 License
