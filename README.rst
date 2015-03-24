@@ -15,7 +15,7 @@ Do you use `Flask <http://flask.pocoo.org>`_ with `SQLAlchemy <http://www.sqlalc
 
 This package lets you backup and restore all your data using `SQLALchemy dumps() method <http://docs.sqlalchemy.org/en/latest/core/serializer.html>`_.
 
-It is an easy way (one singe command, I mean it) to save **all** the data stored in your database.
+It is an easy way (one single command, I mean it) to save **all** the data stored in your database.
 
 You can save it locally or in a remote server via FTP.
 
