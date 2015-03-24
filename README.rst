@@ -311,6 +311,7 @@ Contributors
 ------------
 
 Thanks `Kirill Sumorokov <https://github.com/clayman74>`_ and `spikergit1 <https://github.com/spikergit1>`_ for the pull requests, issues reported, feedback and support.
+
 Changelog
 ---------
 
