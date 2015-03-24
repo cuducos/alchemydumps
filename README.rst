@@ -294,7 +294,7 @@ If you wanna run the tests:
     $ python setup.py develop
     $ nosetests
 
-If you wnat to include remote (FTP) tests you have to rename ``/tests/.env.sample`` to ``/tests/.env`` and edit it with valid FTP credentials.
+If you want to include remote (FTP) tests you have to rename ``/tests/.env.sample`` to ``/tests/.env`` and edit it with valid FTP credentials.
 
 Contributing
 ------------
