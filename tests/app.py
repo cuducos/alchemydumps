@@ -15,13 +15,21 @@ manager.add_command('alchemydumps', AlchemyDumpsCommand)
 
 
 # create models
+class Base(db.Model):
+    __abstract__ = True
+    created_on = db.Column(db.DateTime, default=db.func.now())
+    updated_on = db.Column(db.DateTime,
+                           default=db.func.now(),
+                           onupdate=db.func.now())
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(140), index=True, unique=True)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
 
-class Post(db.Model):
+class Post(Base):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140))
     content = db.Column(db.UnicodeText)

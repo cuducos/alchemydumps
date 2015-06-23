@@ -55,3 +55,7 @@ class TestSQLAlchemyHelper(TestCase):
             self.assertEqual(user.email, parsed_user[0].email)
             self.assertEqual(post1.title, parsed_posts[0].title)
             self.assertEqual(post2.content, parsed_posts[1].content)
+            self.assertTrue(parsed_posts[0].created_on)
+            self.assertTrue(parsed_posts[0].updated_on)
+            self.assertTrue(parsed_posts[1].created_on)
+            self.assertTrue(parsed_posts[1].updated_on)
