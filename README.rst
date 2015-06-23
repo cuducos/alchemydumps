@@ -1,13 +1,16 @@
 AlchemyDumps
 ------------
 
-.. image:: https://pypip.in/version/Flask-AlchemyDumps/badge.svg
+.. image:: https://img.shields.io/pypi/status/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
-    :alt: Latest Version
-.. image:: https://pypip.in/download/Flask-AlchemyDumps/badge.svg
+    :alt: Development Status: Alpha
+.. image:: https://img.shields.io/pypi/v/flask_alchemydumps.svg?style=flat
+    :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
+    :alt: Lastest Version
+.. image:: https://img.shields.io/pypi/dm/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi//Flask-AlchemyDumps/
     :alt: Downloads
-.. image:: https://pypip.in/license/Flask-AlchemyDumps/badge.svg
+.. image:: https://img.shields.io/pypi/l/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
     :alt: License
 
