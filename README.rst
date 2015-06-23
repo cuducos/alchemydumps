@@ -83,6 +83,7 @@ Considering you have these *models* (that is to say, these `SQLAlchemy mapped cl
         content = db.Column(db.UnicodeText)
         author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+Just in case: this is a simple example, but you can use *abstract* mapped classes as well.
 
 You can backup all your data
 ----------------------------
@@ -310,11 +311,13 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Contributors
 ------------
 
-Thanks `Kirill Sumorokov <https://github.com/clayman74>`_ and `spikergit1 <https://github.com/spikergit1>`_ for the pull requests, issues reported, feedback and support.
+Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ and `Walter <https://github.com/antwal>`_ for the pull requests, issues reported, feedback and support.
 
 Changelog
 ---------
 
+**Version 0.0.7**
+    * Add support for abstract models.
 **Version 0.0.6**
     * Remote backup/restore via FTP.
     * General code improvements.
