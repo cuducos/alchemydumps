@@ -7,6 +7,9 @@ AlchemyDumps
 .. image:: https://img.shields.io/pypi/v/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
     :alt: Lastest Version
+.. image:: https://img.shields.io/travis/cuducos/alchemydumps.svg?style=flat
+    :target: https://travis-ci.org/cuducos/alchemydumps
+    :alt: Travis CI
 .. image:: https://img.shields.io/pypi/dm/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi//Flask-AlchemyDumps/
     :alt: Downloads
