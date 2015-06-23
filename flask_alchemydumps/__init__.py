@@ -1,15 +1,19 @@
 # coding: utf-8
 
+# Python 2 compatibility with Pyhton 3 import and print
+from __future__ import absolute_import
+from __future__ import print_function
+
 # import third party modules
 from flask.ext.script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
 # import alchemydumps helpers
-from helpers.autoclean import bw_lists
-from helpers.backup import Backup
-from helpers.confirm import confirm
-from helpers.database import AlchemyDumpsDatabase
+from .helpers.autoclean import bw_lists
+from .helpers.backup import Backup
+from .helpers.confirm import confirm
+from .helpers.database import AlchemyDumpsDatabase
 
 
 class _AlchemyDumpsConfig(object):
@@ -49,11 +53,11 @@ def create():
         full_path = backup.create_file(name, data[class_name])
         rows = len(alchemy.parse_data(data[class_name]))
         if full_path:
-            print '==> {} rows from {} saved as {}'.format(rows,
+            print('==> {} rows from {} saved as {}'.format(rows,
                                                            class_name,
-                                                           full_path)
+                                                           full_path))
         else:
-            print '==> Error creating {} at {}'.format(name, backup.path)
+            print('==> Error creating {} at {}'.format(name, backup.path))
     backup.close_connection()
 
 
@@ -64,7 +68,7 @@ def history():
     # if no files
     backup = Backup()
     if not backup.files:
-        print '==> No backups found at {}.'.format(backup.path)
+        print('==> No backups found at {}.'.format(backup.path))
         return None
 
     # create output
@@ -73,10 +77,10 @@ def history():
     for output in groups:
         if output['files']:
             date_formated = backup.parsed_id(output['id'])
-            print '\n==> ID: {} (from {})'.format(output['id'], date_formated)
+            print('\n==> ID: {} (from {})'.format(output['id'], date_formated))
             for file_name in output['files']:
-                print '    {}{}'.format(backup.path, file_name)
-    print ''
+                print('    {}{}'.format(backup.path, file_name))
+    print('')
     backup.close_connection()
 
 
@@ -116,13 +120,13 @@ def restore(date_id):
 
                 # print summary
                 status = 'partially' if len(fails) else 'totally'
-                print '==> {} {} restored.'.format(name, status)
+                print('==> {} {} restored.'.format(name, status))
                 for f in fails:
-                    print '    Restore of {} failed.'.format(f)
+                    print('    Restore of {} failed.'.format(f))
             else:
                 name = backup.get_name(date_id, class_name)
                 msg = '==> No file found for {} ({}{} does not exist).'
-                print msg.format(class_name, backup.path, name)
+                print(msg.format(class_name, backup.path, name))
 
 
 @AlchemyDumpsCommand.option('-d',
@@ -146,15 +150,15 @@ def remove(date_id, assume_yes=False):
 
         # List files to be deleted
         delete_list = backup.filter_files(date_id)
-        print '==> Do you want to delete the following files?'
+        print('==> Do you want to delete the following files?')
         for name in delete_list:
-            print '    {}{}'.format(backup.path, name)
+            print('    {}{}'.format(backup.path, name))
 
         # delete
         if confirm(assume_yes):
             for name in delete_list:
                 backup.delete_file(name)
-                print '    {} deleted.'.format(name)
+                print('    {} deleted.'.format(name))
     backup.close_connection()
 
 
@@ -176,25 +180,25 @@ def autoclean(assume_yes=False):
     # check if there are backups
     backup = Backup()
     if not backup.files:
-        print '==> No backups found.'
+        print('==> No backups found.')
         return None
 
     # get black and white list
     lists = bw_lists(backup.get_ids())
     if not lists['black_list']:
-        print '==> No backup to be deleted.'
+        print('==> No backup to be deleted.')
         return None
 
     # print the list of files to be kept/deleted
     black_list = list()
     for l in ['white_list', 'black_list']:
         msg = 'kept' if l == 'white_list' else 'deleted'
-        print '\n==> {} backups will be {}:'.format(len(lists[l]), msg)
+        print('\n==> {} backups will be {}:'.format(len(lists[l]), msg))
         for date_id in lists[l]:
             date_formated = backup.parsed_id(date_id)
-            print '\n    ID: {} (from {})'.format(date_id, date_formated)
+            print('\n    ID: {} (from {})'.format(date_id, date_formated))
             for f in backup.filter_files(date_id):
-                print '    {}{}'.format(backup.path, f)
+                print('    {}{}'.format(backup.path, f))
                 if l == 'black_list':
                     black_list.append(f)
 
@@ -202,5 +206,5 @@ def autoclean(assume_yes=False):
     if confirm(assume_yes):
         for name in black_list:
             backup.delete_file(name)
-            print '    {} deleted.'.format(name)
+            print('    {} deleted.'.format(name))
     backup.close_connection()

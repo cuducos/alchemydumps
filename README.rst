@@ -279,12 +279,10 @@ Output:
         db-bkp-20050324012859-User.gz deleted.
         db-bkp-20050324012859-Post.gz deleted.
 
-
-
 Requirements & Dependencies
 ---------------------------
 
-**AlchemyDumps** `not` ready for Python 3 – but pull requests are more than welcomed.
+**AlchemyDumps** is tested and should work in Python 2.7+ and 3.4+.
 
 **AlchemyDumps** was designed to work together with `Flask <http://flask.pocoo.org>`_ applications that uses `SQLAlchemy <http://www.sqlalchemy.org/>`_. It runs through the `Flask-Script <http://flask-script.readthedocs.org/en/latest/>`_ manager. Thus, these packages are essential requirements. **AlchemyDumps** also uses `Unipath <https://github.com/mikeorr/Unipath>`_ package. All these packages, if needed, will be installed once you install **AlchemyDumps**.
 
@@ -322,6 +320,8 @@ Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://
 Changelog
 ---------
 
+**Version 0.0.8**
+    * Python 3 support.
 **Version 0.0.7**
     * Add support for abstract models.
 **Version 0.0.6**

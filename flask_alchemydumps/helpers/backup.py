@@ -97,7 +97,7 @@ class Backup(object):
         """Check backup files for the given timestamp numeric ID"""
         if date_id and date_id in self.get_ids():
             return True
-        print '==> Invalid id. Use "history" to list existing downloads'
+        print('==> Invalid id. Use "history" to list existing downloads')
         return False
 
     def get_name(self, date_id, class_name):
@@ -176,7 +176,7 @@ class Backup(object):
                                               '*' * len(password),
                                               server,
                                               path)
-                print "==> Couldn't connect to ftp://{}".format(address)
+                print("==> Couldn't connect to ftp://{}".format(address))
                 return False
             self.ftp_server = server
             self.ftp_path = path

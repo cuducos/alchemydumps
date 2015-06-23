@@ -3,13 +3,14 @@
 from setuptools import setup, find_packages
 
 setup(name='Flask-AlchemyDumps',
-      version='0.0.7',
+      version='0.0.8',
       description='SQLAlchemy backup/dump tool for Flask',
       long_description=open('README.rst').read(),
       classifiers=['Development Status :: 3 - Alpha',
                    'License :: OSI Approved :: MIT License',
                    'Framework :: Flask',
                    'Programming Language :: Python :: 2.7',
+                   'Programming Language :: Python :: 3.4',
                    'Intended Audience :: Developers',
                    'Topic :: Database',
                    'Topic :: System :: Archiving :: Backup',
