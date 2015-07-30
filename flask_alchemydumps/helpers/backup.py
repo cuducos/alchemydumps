@@ -154,6 +154,7 @@ class Backup(object):
             backup_dir = basedir.child('alchemydumps')
             if not backup_dir.exists():
                 backup_dir.mkdir()
+
             path = abspath(str(backup_dir.absolute()))
             if path.endswith(os.sep):
                 return path
