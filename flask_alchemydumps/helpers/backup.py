@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import os
+from os.path import abspath
 import gzip
 import re
 from datetime import datetime
@@ -8,7 +10,6 @@ from ftplib import FTP, error_perm
 from tempfile import mkstemp
 from time import gmtime, strftime
 from unipath import Path
-
 
 class Backup(object):
     """Manages backup files through local or FTP file systems"""
@@ -147,14 +148,17 @@ class Backup(object):
         :return: Unipath if local, string if FTP
         """
         if self.ftp:
-            return 'ftp://{}{}'.format(self.ftp_server,
-                                       self.__slashes(self.ftp_path))
+            return 'ftp://{}/{}/'.format(self.ftp_server, re.sub(r'/$', '', self.ftp_path))
         else:
             basedir = current_app.extensions['alchemydumps'].basedir
             backup_dir = basedir.child('alchemydumps')
             if not backup_dir.exists():
                 backup_dir.mkdir()
-            return self.__slashes(str(backup_dir.absolute()))
+            path = abspath(str(backup_dir.absolute()))
+            if path.endswith(os.sep):
+                return path
+            else:
+                return path + os.sep
 
     def __get_ftp(self):
 
@@ -184,11 +188,9 @@ class Backup(object):
         return False
 
     @staticmethod
-    def __slashes(string):
-        """Adds, if needed, a slash to the beginning and ending of a string"""
-        if string and len(string) > 1:
-            if string[0:1] != '/':
-                string = '/{}'.format(string)
-            if string[-1] != '/':
-                string = '{}/'.format(string)
-        return string
+    def __ensure_os_absolute_path(path):
+        """Ensure the selected path is a folder path
+        """
+        if path and len(path) > 1:
+            return abspath(path) + os.sep
+        return path
