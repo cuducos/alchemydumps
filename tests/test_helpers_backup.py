@@ -3,6 +3,7 @@
 from .app import app
 from flask.ext.alchemydumps.helpers.backup import Backup
 from time import gmtime, strftime
+from unipath import Path
 from unittest import TestCase
 
 
@@ -91,3 +92,13 @@ class TestIdentificationHelper(TestCase):
                 backup.delete_file(name)
             backup = Backup()
             self.assertEqual(len(backup.files), 0)
+
+
+class TestPath(TestCase):
+
+    def test_get_path_with_local_storage(self):
+        with app.app_context():
+            backup = Backup()
+            path = Path(backup.path)
+            self.assertTrue(path.exists())
+            self.assertTrue(path.isdir())
