@@ -1,8 +1,7 @@
 # coding: utf-8
 
-import os
-from os.path import abspath
 import gzip
+import os
 import re
 from datetime import datetime
 from flask import current_app
@@ -10,6 +9,7 @@ from ftplib import FTP, error_perm
 from tempfile import mkstemp
 from time import gmtime, strftime
 from unipath import Path
+
 
 class Backup(object):
     """Manages backup files through local or FTP file systems"""
@@ -143,23 +143,29 @@ class Backup(object):
             return [f.name for f in Path(self.path).listdir()]
 
     def __get_path(self):
-        """
-        Gets the path to the backup location
-        :return: Unipath if local, string if FTP
-        """
+        """Gets the absolute path to the backup location"""
+
+        # normalize path for FTP
         if self.ftp:
-            return 'ftp://{}/{}/'.format(self.ftp_server, re.sub(r'/$', '', self.ftp_path))
+            if not self.ftp_path.startswith('/'):
+                self.ftp_path = '/~/{}'.format(self.ftp_path)
+            return 'ftp://{}{}/'.format(self.ftp_server,
+                                        re.sub(r'/$', '', self.ftp_path))
+
+        # normalize file for local storage
         else:
+
+            # create backup directory if it doesn't exist
             basedir = current_app.extensions['alchemydumps'].basedir
             backup_dir = basedir.child('alchemydumps')
             if not backup_dir.exists():
                 backup_dir.mkdir()
 
-            path = abspath(str(backup_dir.absolute()))
+            # return the backup directory with leading slash
+            path = str(backup_dir.absolute())
             if path.endswith(os.sep):
                 return path
-            else:
-                return path + os.sep
+            return '{}{}'.format(path, os.sep)
 
     def __get_ftp(self):
 
@@ -187,11 +193,3 @@ class Backup(object):
             self.ftp_path = path
             return ftp
         return False
-
-    @staticmethod
-    def __ensure_os_absolute_path(path):
-        """Ensure the selected path is a folder path
-        """
-        if path and len(path) > 1:
-            return abspath(path) + os.sep
-        return path
