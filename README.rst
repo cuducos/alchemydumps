@@ -315,11 +315,13 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Contributors
 ------------
 
-Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ and `Walter <https://github.com/antwal>`_ for the pull requests, issues reported, feedback and support.
+Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ , `Walter <https://github.com/antwal>`_, `Allana <https://github.com/allanaari>`_ and `Rodolfo Carvalho <https://github.com/rscarvalho>`_ for the pull requests, reported issues, feedback and support.
 
 Changelog
 ---------
 
+**Version 0.0.9**
+    * Fix bug related to directory paths in Windows.
 **Version 0.0.8**
     * Python 3 support.
 **Version 0.0.7**
