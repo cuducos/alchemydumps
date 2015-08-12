@@ -14,7 +14,7 @@ AlchemyDumps
     :target: https://pypi.python.org/pypi/alchemydumps
     :alt: Python Version
 .. image:: https://img.shields.io/pypi/dm/flask_alchemydumps.svg?style=flat
-    :target: https://pypi.python.org/pypi//Flask-AlchemyDumps/
+    :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
     :alt: Downloads
 .. image:: https://img.shields.io/pypi/l/flask_alchemydumps.svg?style=flat
     :target: https://pypi.python.org/pypi/Flask-AlchemyDumps/
