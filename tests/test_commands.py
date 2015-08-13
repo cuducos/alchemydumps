@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-from .app import app, db, Post, User
+from .app import app, db, Post, User, SomeControl
 from flask.ext.alchemydumps.helpers.backup import Backup
 from unittest import TestCase
 
@@ -26,6 +26,10 @@ class TestCommands(TestCase):
         db.session.add(Post(title=u'Post 2',
                             content=u'Ipsum lorem...',
                             author_id=1))
+
+        # feed some control table
+        db.session.add(SomeControl(uuid='1'))
+
         db.session.commit()
 
     def tearDown(self):
@@ -53,7 +57,7 @@ class TestCommands(TestCase):
             # create and assert backup files
             os.system('python tests/app.py alchemydumps create')
             backup = Backup()
-            self.assertEqual(len(backup.files), 2)
+            self.assertEqual(len(backup.files), 3)
 
             # clean up and recreate database
             self.db.drop_all()
