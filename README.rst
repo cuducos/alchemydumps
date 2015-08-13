@@ -70,6 +70,19 @@ If you want to save your backups in a remote server via FTP, just make sure to s
 
 If you want, there is a ``.env.sample`` inside the ``/tests`` folder. Just copy it to your application root folder, rename it to ``.env``, and insert your credentials.
 
+**Using application factory**
+
+It is possible to use this package with application factories:
+
+::
+    
+    alchemydumps = AlchemyDumps()
+
+    def create_app(settings):
+        …
+    	alchemydumps.init_app(app, db)
+    	…
+
 **.gitignore**
 
 You might want to add ``alchemydumps`` to your ``.gitignore``. It is the folder where **AlchemyDumps** save the backup files.
@@ -318,7 +331,7 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Contributors
 ------------
 
-Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ , `Walter <https://github.com/antwal>`_, `Allana <https://github.com/allanaari>`_ and `Rodolfo Carvalho <https://github.com/rscarvalho>`_ for the pull requests, reported issues, feedback and support.
+Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ , `Walter <https://github.com/antwal>`_, `Allana <https://github.com/allanaari>`_, `Rodolfo Carvalho <https://github.com/rscarvalho>`_,  `Italo Maia <https://github.com/italomaia>`_ and `Viktor Likin <https://github.com/vlikin>`_ for the pull requests, reported issues, feedback and support.
 
 Changelog
 ---------
