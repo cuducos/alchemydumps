@@ -51,8 +51,10 @@ class TestCommands(TestCase):
             # assert data was inserted
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
+            self.assertEqual(controls, 1)
 
             # create and assert backup files
             os.system('python tests/app.py alchemydumps create')
@@ -66,8 +68,10 @@ class TestCommands(TestCase):
             # assert database is empty
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
             self.assertEqual(posts, 0)
             self.assertEqual(authors, 0)
+            self.assertEqual(controls, 0)
 
             # restore backup
             date_id = backup.get_ids()
@@ -77,12 +81,17 @@ class TestCommands(TestCase):
             # assert data was restored
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
+            self.assertEqual(controls, 1)
 
             # assert data is accurate
-            post = Post.query.first()
-            self.assertEqual(post.author.email, 'me@example.etc')
+            posts= Post.query.all()
+            for num in range(1):
+                self.assertEqual(posts[num].author.email, 'me@example.etc')
+                self.assertEqual(posts[num].title, u'Post {}'.format(num + 1))
+                self.assertEqual(posts[num].content, u'Lorem ipsum...')
 
             # remove backup
             command = 'python tests/app.py alchemydumps remove -d {} -y'
