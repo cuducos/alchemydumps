@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-from .app import app, db, Post, User, SomeControl
+from .app import app, db, Post, User, SomeControl, Comments
 from flask.ext.alchemydumps.helpers.backup import Backup
 from unittest import TestCase
 
@@ -52,14 +52,16 @@ class TestCommands(TestCase):
             posts = Post.query.count()
             authors = User.query.count()
             controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
             self.assertEqual(controls, 1)
+            self.assertEqual(comments, 0)
 
             # create and assert backup files
             os.system('python tests/app.py alchemydumps create')
             backup = Backup()
-            self.assertEqual(len(backup.files), 3)
+            self.assertEqual(len(backup.files), 4)
 
             # clean up and recreate database
             self.db.drop_all()
@@ -69,9 +71,11 @@ class TestCommands(TestCase):
             posts = Post.query.count()
             authors = User.query.count()
             controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 0)
             self.assertEqual(authors, 0)
             self.assertEqual(controls, 0)
+            self.assertEqual(comments, 0)
 
             # restore backup
             date_id = backup.get_ids()
@@ -82,9 +86,11 @@ class TestCommands(TestCase):
             posts = Post.query.count()
             authors = User.query.count()
             controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
             self.assertEqual(controls, 1)
+            self.assertEqual(comments, 0)
 
             # assert data is accurate
             posts= Post.query.all()
@@ -128,7 +134,7 @@ class TestCommands(TestCase):
                 '20090111042034',
                 '20100112115416'
             ]
-            class_names = ['Post', 'User']
+            class_names = ['Post', 'User', 'SomeControl', 'Comments']
             for date_id in date_ids:
                 for class_name in class_names:
                     name = backup.get_name(date_id, class_name)

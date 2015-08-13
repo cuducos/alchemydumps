@@ -23,7 +23,7 @@ class TestSQLAlchemyHelper(TestCase):
             self.assertIn(User, classes)
             self.assertIn(Post, classes)
             self.assertIn(SomeControl, classes)
-            self.assertEqual(len(classes), 3)
+            self.assertEqual(len(classes), 4)
 
     def test_get_and_parse_data(self):
         with app.app_context():

@@ -43,6 +43,13 @@ class SomeControl(db.Model):
     def __init__(self, uuid):
         self.uuid = uuid
 
+
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
+    content = db.Column(db.UnicodeText)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
 # run
 if __name__ == '__main__':
     manager.run()
