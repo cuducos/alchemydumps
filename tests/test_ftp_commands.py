@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-from .app_ftp import app, db, Post, User
+from .app_ftp import app, db, Post, User, SomeControl, Comments
 from flask.ext.alchemydumps.helpers.backup import Backup
 from unittest import TestCase
 
@@ -26,6 +26,10 @@ class TestFTPCommands(TestCase):
         db.session.add(Post(title=u'Post 2',
                             content=u'Ipsum lorem...',
                             author_id=1))
+
+        # feed some control table
+        db.session.add(SomeControl(uuid='1'))
+
         db.session.commit()
 
     def tearDown(self):
@@ -47,13 +51,17 @@ class TestFTPCommands(TestCase):
             # assert data was inserted
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
+            self.assertEqual(controls, 1)
+            self.assertEqual(comments, 0)
 
             # create and assert backup files
             os.system('python tests/app_ftp.py alchemydumps create')
             backup = Backup()
-            self.assertEqual(len(backup.files), 2)
+            self.assertEqual(len(backup.files), 4)
 
             # clean up and recreate database
             self.db.drop_all()
@@ -62,8 +70,12 @@ class TestFTPCommands(TestCase):
             # assert database is empty
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 0)
             self.assertEqual(authors, 0)
+            self.assertEqual(controls, 0)
+            self.assertEqual(comments, 0)
 
             # restore backup
             date_id = backup.get_ids()
@@ -73,12 +85,19 @@ class TestFTPCommands(TestCase):
             # assert data was restored
             posts = Post.query.count()
             authors = User.query.count()
+            controls = SomeControl.query.count()
+            comments = Comments.query.count()
             self.assertEqual(posts, 2)
             self.assertEqual(authors, 1)
+            self.assertEqual(controls, 1)
+            self.assertEqual(comments, 0)
 
             # assert data is accurate
-            post = Post.query.first()
-            self.assertEqual(post.author.email, 'me@example.etc')
+            posts= Post.query.all()
+            for num in range(1):
+                self.assertEqual(posts[num].author.email, 'me@example.etc')
+                self.assertEqual(posts[num].title, u'Post {}'.format(num + 1))
+                self.assertEqual(posts[num].content, u'Lorem ipsum...')
 
             # remove backup
             command = 'python tests/app_ftp.py alchemydumps remove -d {} -y'
@@ -115,7 +134,7 @@ class TestFTPCommands(TestCase):
                 '20090111042034',
                 '20100112115416'
             ]
-            class_names = ['Post', 'User']
+            class_names = ['Post', 'User', 'SomeControl', 'Comments']
             for date_id in date_ids:
                 for class_name in class_names:
                     name = backup.get_name(date_id, class_name)
