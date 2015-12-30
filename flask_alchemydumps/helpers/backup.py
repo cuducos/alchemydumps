@@ -191,4 +191,3 @@ class Backup(object):
             self.ftp_server = server
             self.ftp_path = path
             return ftp
-        return False
