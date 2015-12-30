@@ -7,6 +7,7 @@ from flask_alchemydumps import AlchemyDumps, AlchemyDumpsCommand
 
 # create a Flask app
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 manager = Manager(app)
