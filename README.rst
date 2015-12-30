@@ -331,7 +331,16 @@ You can `report issues <https://github.com/cuducos/alchemydumps/issues>`_ or:
 Contributors
 ------------
 
-Thanks `Kirill Sumorokov <https://github.com/clayman74>`_, `spikergit1 <https://github.com/spikergit1>`_ , `Walter <https://github.com/antwal>`_, `Allana <https://github.com/allanaari>`_, `Rodolfo Carvalho <https://github.com/rscarvalho>`_,  `Italo Maia <https://github.com/italomaia>`_ and `Viktor Likin <https://github.com/vlikin>`_ for the pull requests, reported issues, feedback and support.
+Thanks for the pull requests, reported issues, feedback and support:
+
+* `Allana <https://github.com/allanaari>`_
+* `blinzelaffe <https://github.com/blinzelaffe>`_
+* `Italo Maia <https://github.com/italomaia>`_
+* `Kirill Sumorokov <https://github.com/clayman74>`_
+* `Rodolfo Carvalho <https://github.com/rscarvalho>`_
+* `spikergit1 <https://github.com/spikergit1>`_
+* `Viktor Likin <https://github.com/vlikin>`_
+* `Walter <https://github.com/antwal>`_
 
 Changelog
 ---------
