@@ -174,20 +174,19 @@ class Backup(object):
         user = current_app.config.get('ALCHEMYDUMPS_FTP_USER', False)
         password = current_app.config.get('ALCHEMYDUMPS_FTP_PASSWORD', False)
         path = current_app.config.get('ALCHEMYDUMPS_FTP_PATH', False)
+        mock_password = '*' * len(password) if password else ''
+        address = 'ftp://{}:{}@{}{}'.format(user, mock_password, server, path)
 
         # try to connect using FTP settings
         if server and user and password:
             try:
                 ftp = FTP(server, user, password)
                 change_path = ftp.cwd(path)
-                if change_path[0:6] != '250 OK':
+                if not change_path.startswith('250 '):
+                    print("==> Path doesn't exist: " + address)
                     ftp.quit()
             except error_perm:
-                address = '{}:{}@{}{}'.format(user,
-                                              '*' * len(password),
-                                              server,
-                                              path)
-                print("==> Couldn't connect to ftp://{}".format(address))
+                print("==> Couldn't connect to " + address)
                 return False
             self.ftp_server = server
             self.ftp_path = path
