@@ -32,12 +32,12 @@ class Backup(object):
 
         # write a tmp file
         tmp = mkstemp()[1]
-        with gzip.open(tmp, 'wb') as handler:
+        with gzip.open(tmp, 'w') as handler:
             handler.write(contents)
 
         # send it to the FTP server
         if self.ftp:
-            self.ftp.storbinary('STOR {}'.format(name), open(tmp, 'rb'))
+            self.ftp.storbinary('STOR {}'.format(name), open(tmp, 'r'))
             return '{}{}'.format(self.path, name)
 
         # or save it locally
@@ -53,11 +53,11 @@ class Backup(object):
         """Reads the contents of a gzip file"""
         if self.ftp:
             path = mkstemp()[1]
-            with open(path, 'wb') as tmp:
+            with open(path, 'w') as tmp:
                 self.ftp.retrbinary('RETR {}'.format(name), tmp.write)
         else:
             path = Path(self.path).child(name)
-        with gzip.open(path, 'rb') as handler:
+        with gzip.open(path, 'r') as handler:
             return handler.read()
 
     def delete_file(self, name):
