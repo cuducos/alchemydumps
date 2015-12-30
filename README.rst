@@ -345,6 +345,9 @@ Thanks for the pull requests, reported issues, feedback and support:
 Changelog
 ---------
 
+**Version 0.0.10**
+    * Python 3.5 support.
+    * Fix bug related to 250 status in FTP backups (with vsftpd).
 **Version 0.0.9**
     * Fix bug related to directory paths in Windows.
 **Version 0.0.8**
