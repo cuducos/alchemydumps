@@ -49,7 +49,7 @@ manager.add_command('alchemydumps', AlchemyDumpsCommand)
 
 If you want to save your backup in a remote server via FTP, just make sure to set these environment variables replacing the placeholder information with the proper credentials:
 
-```bash
+```console
 export ALCHEMYDUMPS_FTP_SERVER=ftp.server.com
 export ALCHEMYDUMPS_FTP_USER=johndoe
 export ALCHEMYDUMPS_FTP_PASSWORD=secret
@@ -96,7 +96,7 @@ Just in case: this is a simple example, but you can use *abstract* mapped classe
 
 ### You can backup all your data
 
-```bash
+```console
 python manage.py alchemydumps create
 ```
 
@@ -109,7 +109,7 @@ Output:
 
 ### You can list the backups you have already created
 
-```bash
+```console
 python manage.py alchemydumps history
 ```
 
@@ -127,7 +127,7 @@ Output:
 
 ### You can restore a backup
 
-```bash
+```console
 python manage.py alchemydumps restore -d 20141115172107
 ```
 
@@ -140,7 +140,7 @@ Output:
 
 ### You can delete an existing backup
 
-```bash
+```console
 python manage.py alchemydumps remove -d 20141115172107
 ```
 
@@ -164,7 +164,7 @@ The `autoclean` command follows these rules to delete backups:
 * It keeps **the most recent** backup **from each month of the last year**.
 * It keeps **the most recent** backup **from each remaining year**.
 
-```bash
+```console
 python manage.py alchemydumps autoclean
 ```
 
@@ -286,7 +286,7 @@ Output:
 
 If you wanna run the tests:
 
-```bash
+```console
 git clone git@github.com:cuducos/alchemydumps.git
 cd /alchemydumps
 pip install -r tests/requirements.txt
