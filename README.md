@@ -15,6 +15,8 @@ It is an easy way (one single command, I mean it) to save **all** the data store
 
 You can save it locally or in a remote server via FTP.
 
+> **WARNING** [**@baumatron**](https://github.com/baumatron)'ve [found an important bug](https://github.com/cuducos/alchemydumps/issues/13): at this time this package won't backup [non-standard mappings](http://docs.sqlalchemy.org/en/latest/orm/nonstandard_mappings.html), such as [many-to-many association tables](http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html#many-to-many). This is still an open issue and I have no expectation to fix is in the following weeks — **_pull requests_ are more tham welcomed**.
+
 ## Install
 
 First install the package: `pip install Flask-AlchemyDumps`
@@ -312,12 +314,14 @@ Thanks for the pull requests, reported issues, feedback and support:
 
 * [Allana](https://github.com/allanaari)
 * [blinzelaffe](https://github.com/blinzelaffe)
+* [Brian Baumhover](https://github.com/baumatron)
 * [Italo Maia](https://github.com/italomaia)
 * [Kirill Sumorokov](https://github.com/clayman74)
 * [Rodolfo Carvalho](https://github.com/rscarvalho)
 * [spikergit1](https://github.com/spikergit1)
 * [Viktor Likin](https://github.com/vlikin)
 * [Walter](https://github.com/antwal)
+
 
 ## Changelog
 
