@@ -9,7 +9,7 @@
 
 Do you use [Flask](http://flask.pocoo.org>) with [SQLAlchemy](http://www.sqlalchemy.org/) and [Flask-Script](http://flask-script.readthedocs.org/) ? Wow, what a coincidence!
 
-This package lets you backup and restore all your data using [SQLALchemy dumps() method](http://docs.sqlalchemy.org/en/latest/core/serializer.html).
+This package lets you backup and restore all your data using [SQLAlchemy dumps() method](http://docs.sqlalchemy.org/en/latest/core/serializer.html).
 
 It is an easy way (one single command, I mean it) to save **all** the data stored in your database.
 
