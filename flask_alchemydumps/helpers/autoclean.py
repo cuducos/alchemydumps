@@ -5,16 +5,7 @@ from datetime import date, datetime, timedelta
 from itertools import chain
 
 
-# TODO: remove
-def bw_lists(dates):
-    backup_list = BackupList(dates)
-    return {
-        'white_list': backup_list.white_list,
-        'black_list': backup_list.black_list
-    }
-
-
-class BackupList(object):
+class BackupAutoClean(object):
 
     def __init__(self, dates=list(), today=None):
         """

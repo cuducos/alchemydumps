@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from flask.ext.alchemydumps.helpers.autoclean import BackupList
+from flask.ext.alchemydumps.helpers.autoclean import BackupAutoClean
 from datetime import date
 from unittest import TestCase
 
@@ -8,15 +8,15 @@ from unittest import TestCase
 class TestAutocleanHelper(TestCase):
 
     def test_get_last_month_length(self):
-        backup_list = BackupList([], date(2012, 3, 1))
+        backup_list = BackupAutoClean([], date(2012, 3, 1))
         self.assertEqual(29, backup_list.get_last_month_length())
 
     def test_get_last_year_length(self):
-        backup_list = BackupList([], date(2013, 3, 1))
+        backup_list = BackupAutoClean([], date(2013, 3, 1))
         self.assertEqual(366, backup_list.get_last_year_length())
 
     def test_filter_dates(self):
-        backup_list = BackupList()
+        backup_list = BackupAutoClean()
         dates_none = []
         dates_w = ['20141120000000', '20141119000000']
         dates_m = ['20131101000000', '20131130000000']
@@ -75,7 +75,7 @@ class TestAutocleanHelper(TestCase):
             '20070611074712',
             '20060505063150'
         ]
-        backup_list = BackupList(date_ids, date(2014, 4, 25))
+        backup_list = BackupAutoClean(date_ids, date(2014, 4, 25))
         self.assertEqual(len(backup_list.white_list), 10)
         self.assertEqual(len(backup_list.black_list), 9)
         self.assertEqual(backup_list.white_list, white_list)

@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
 # import alchemydumps helpers
-from .helpers.autoclean import bw_lists
+from .helpers.autoclean import BackupAutoClean
 from .helpers.backup import Backup
 from .helpers.confirm import confirm
 from .helpers.database import AlchemyDumpsDatabase
@@ -184,17 +184,18 @@ def autoclean(assume_yes=False):
         return None
 
     # get black and white list
-    lists = bw_lists(backup.get_ids())
-    if not lists['black_list']:
+    autoclean = BackupAutoClean(backup.get_ids())
+    if not autoclean.black_list:
         print('==> No backup to be deleted.')
         return None
 
     # print the list of files to be kept/deleted
     black_list = list()
-    for l in ['white_list', 'black_list']:
+    for l in ('white_list', 'black_list'):
         msg = 'kept' if l == 'white_list' else 'deleted'
-        print('\n==> {} backups will be {}:'.format(len(lists[l]), msg))
-        for date_id in lists[l]:
+        total = len(getattr(autoclean, l))
+        print('\n==> {} backups will be {}:'.format(total, msg))
+        for date_id in getattr(autoclean, l):
             date_formated = backup.parsed_id(date_id)
             print('\n    ID: {} (from {})'.format(date_id, date_formated))
             for f in backup.filter_files(date_id):
