@@ -32,6 +32,6 @@ setup(name='Flask-AlchemyDumps',
                         'SQLAlchemy',
                         'Unipath'],
       test_suite='nose.collector',
-      tests_require=['nose'],
+      tests_require=['nose', 'python-decouple'],
       include_package_data=True,
       zip_safe=False)

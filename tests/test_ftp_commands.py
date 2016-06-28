@@ -3,7 +3,7 @@
 import os
 from .app_ftp import app, db, Post, User, SomeControl, Comments
 from flask.ext.alchemydumps.helpers.backup import Backup
-from unittest import TestCase
+from unittest import skip, TestCase
 
 
 class TestFTPCommands(TestCase):
@@ -44,6 +44,7 @@ class TestFTPCommands(TestCase):
         directory.rmtree()
         sqlite.remove()
 
+    @skip('FTP tests disabled to be refactored')
     def test_create_restore_remove(self):
 
         with app.app_context():
@@ -107,6 +108,7 @@ class TestFTPCommands(TestCase):
             backup = Backup()
             self.assertEqual(len(backup.files), 0)
 
+    @skip('FTP tests disabled to be refactored')
     def test_autoclean(self):
 
         with app.app_context():

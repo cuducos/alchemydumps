@@ -8,14 +8,14 @@ from flask_alchemydumps import AlchemyDumps, AlchemyDumpsCommand
 
 # create a Flask app
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-ftp_settings = ['ALCHEMYDUMPS_FTP_SERVER',
-                'ALCHEMYDUMPS_FTP_USER',
-                'ALCHEMYDUMPS_FTP_PASSWORD',
-                'ALCHEMYDUMPS_FTP_PATH']
-for setting in ftp_settings:
+
+for setting in ('SERVER', 'USER', 'PASSWORD', 'PATH'):
+    setting = 'ALCHEMYDUMPS_FTP_' + setting
     app.config[setting] = config(setting, default=False)
+
 db = SQLAlchemy(app)
 manager = Manager(app)
 alchemydumps = AlchemyDumps(app, db, basedir='tests/')
