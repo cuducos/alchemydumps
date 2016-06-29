@@ -2,43 +2,43 @@
 
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.confirm import confirm
+from flask_alchemydumps.helpers.confirm import Confirm
 
 
-# Python 2 and 3 compatibility (mock and bultins)
 try:
-    from unittest.mock import patch
-    input_function = 'builtins.input'
+    from unittest.mock import MagicMock
 except ImportError:
-    from mock import patch
-    input_function = 'flask.ext.alchemydumps.helpers.confirm.input'
+    from mock import MagicMock
 
 
 class TestConfirmHelper(TestCase):
 
-    @patch(input_function)
-    def test_no_auto_confirm_upper(self, mocked_input):
-        mocked_input.return_value = 'Y'
-        self.assertTrue(confirm())
+    def test_no_auto_confirm_upper(self):
+        confirm = Confirm()
+        confirm.input = MagicMock(return_value='Y')
+        self.assertTrue(confirm.ask())
 
-    @patch(input_function)
-    def test_no_auto_confirm_lower(self, mocked_input):
-        mocked_input.return_value = 'y'
-        self.assertTrue(confirm())
+    def test_no_auto_confirm_lower(self):
+        confirm = Confirm()
+        confirm.input = MagicMock(return_value='y')
+        self.assertTrue(confirm.ask())
 
-    @patch(input_function)
-    def test_no_auto_confirm_when_something_else(self, mocked_input):
+    def test_no_auto_confirm_when_something_else(self):
         possibilities = ('x', 0, 1, '', None, False)
-        mocked_input.side_effect = possibilities
+        confirm = Confirm()
+        confirm.input = MagicMock(side_effect=possibilities)
         for user_input in possibilities:
-            self.assertFalse(confirm())
+            self.assertFalse(confirm.ask(), user_input)
 
-    @patch(input_function)
-    def test_auto_confirm(self, mocked_input):
-        mocked_input.return_value = ''
+    def test_auto_confirm_with_assume_yes(self):
         ok_possibilities = (True, 'Y', 1)
+        for value in ok_possibilities:
+            confirm = Confirm(value)
+            self.assertTrue(confirm.ask(), value)
+
+    def test_auto_confirm_without_assume_yes(self):
         cancel_possibilities = (False, '', 0)
-        for default_value in ok_possibilities:
-            self.assertTrue(confirm(default_value), default_value)
-        for default_value in cancel_possibilities:
-            self.assertFalse(confirm(default_value), default_value)
+        for value in cancel_possibilities:
+            confirm = Confirm(value)
+            confirm.input = MagicMock()
+            self.assertFalse(confirm.ask(), value)

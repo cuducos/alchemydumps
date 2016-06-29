@@ -9,10 +9,10 @@ from flask.ext.script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
-from .helpers.autoclean import BackupAutoClean
-from .helpers.backup import Backup
-from .helpers.confirm import confirm
-from .helpers.database import AlchemyDumpsDatabase
+from flask_alchemydumps.helpers.autoclean import BackupAutoClean
+from flask_alchemydumps.helpers.backup import Backup
+from flask_alchemydumps.helpers.confirm import Confirm
+from flask_alchemydumps.helpers.database import AlchemyDumpsDatabase
 
 
 class _AlchemyDumpsConfig(object):
@@ -153,7 +153,8 @@ def remove(date_id, assume_yes=False):
             print('    {}{}'.format(backup.target.path, name))
 
         # delete
-        if confirm(assume_yes):
+        confirm = Confirm(assume_yes)
+        if confirm.ask():
             for name in delete_list:
                 backup.target.delete_file(name)
                 print('    {} deleted.'.format(name))
@@ -209,7 +210,8 @@ def autoclean(assume_yes=False):
             delete_list.append(f)
 
     # delete
-    if confirm(assume_yes):
+    confirm = Confirm(assume_yes)
+    if confirm.ask():
         for name in delete_list:
             backup.target.delete_file(name)
             print('    {} deleted.'.format(name))
