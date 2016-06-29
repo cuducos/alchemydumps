@@ -2,10 +2,19 @@
 
 import os
 from unittest import TestCase
+from tempfile import mkdtemp
 
-from flask.ext.alchemydumps.backup import Backup
+from flask_alchemydumps import create, restore, remove, autoclean
+from flask_alchemydumps.backup import Backup, LocalTools
 
 from .app import Comments, Post, SomeControl, User, app, db
+
+
+# Python 2 and 3 compatibility (mock)
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 
 class TestCommands(TestCase):
@@ -14,7 +23,6 @@ class TestCommands(TestCase):
 
         # create database
         self.db = db
-        self.db.drop_all()
         self.db.create_all()
 
         # feed user table
@@ -32,21 +40,23 @@ class TestCommands(TestCase):
         # feed some control table
         db.session.add(SomeControl(uuid='1'))
 
+        # commit
         db.session.commit()
+
+        # temp directory
+        self.dir = mkdtemp()
 
     def tearDown(self):
 
-        # clean up database
+        # clean up database and backup directory
         self.db.drop_all()
 
-        # clean up files and directories
-        basedir = app.extensions['alchemydumps'].basedir.parent
-        directory = basedir.child('alchemydumps-backups')
-        sqlite = basedir.child('test.db')
-        directory.rmtree()
-        sqlite.remove()
+        # delete temp directory
+        os.rmdir(self.dir)
 
-    def test_create_restore_remove(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_create_restore_remove(self, mock_path):
+        mock_path.return_value = self.dir + os.sep
 
         with app.app_context():
 
@@ -61,12 +71,13 @@ class TestCommands(TestCase):
             self.assertEqual(comments, 0)
 
             # create and assert backup files
-            os.system('python tests/app.py alchemydumps create')
+            # self.subprocess_run('create')
+            create()
             backup = Backup()
             backup.files = backup.target.get_files()
             self.assertEqual(len(list(backup.files)), 4)
 
-            # clean up and recreate database
+            # clean up database
             self.db.drop_all()
             self.db.create_all()
 
@@ -83,8 +94,7 @@ class TestCommands(TestCase):
             # restore backup
             backup.files = backup.target.get_files()
             date_id = backup.get_timestamps()
-            command = 'python tests/app.py alchemydumps restore -d {}'
-            os.system(command.format(date_id[0]))
+            restore(date_id[0])
 
             # assert data was restored
             posts = Post.query.count()
@@ -104,15 +114,16 @@ class TestCommands(TestCase):
                 self.assertEqual(posts[num].content, u'Lorem ipsum...')
 
             # remove backup
-            command = 'python tests/app.py alchemydumps remove -d {} -y'
-            os.system(command.format(date_id[0]))
+            remove(date_id[0], True)
 
             # assert there is no backup left
             backup = Backup()
             backup.files = backup.target.get_files()
             self.assertEqual(len(tuple(backup.files)), 0)
 
-    def test_autoclean(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_autoclean(self, mock_path):
+        mock_path.return_value = self.dir + os.sep
 
         with app.app_context():
 
@@ -152,7 +163,7 @@ class TestCommands(TestCase):
             self.assertEqual(len(list(backup.files)), expected_count)
 
             # run auto clean
-            os.system('python tests/app.py alchemydumps autoclean -y')
+            autoclean(True)
 
             # assert some files were deleted
             backup = Backup()

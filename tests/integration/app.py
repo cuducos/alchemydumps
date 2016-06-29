@@ -1,26 +1,20 @@
 # coding: utf-8
 
-from decouple import config
-from flask import Flask
-from flask.ext.script import Manager
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask_alchemydumps import AlchemyDumps, AlchemyDumpsCommand
+from tempfile import NamedTemporaryFile
 
+from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask_alchemydumps import AlchemyDumps
+
+# temporary database
+sqlite = 'sqlite:///' + NamedTemporaryFile().name
 
 # create a Flask app
 app = Flask(__name__)
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-
-for setting in ('SERVER', 'USER', 'PASSWORD', 'PATH'):
-    setting = 'ALCHEMYDUMPS_FTP_' + setting
-    app.config[setting] = config(setting, default=False)
-
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlite
 db = SQLAlchemy(app)
-manager = Manager(app)
-alchemydumps = AlchemyDumps(app, db, basedir='tests/')
-manager.add_command('alchemydumps', AlchemyDumpsCommand)
+alchemydumps = AlchemyDumps(app, db)
 
 
 # create models
@@ -58,7 +52,3 @@ class Comments(db.Model):
     name = db.Column(db.String(140))
     content = db.Column(db.UnicodeText)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-
-# run
-if __name__ == '__main__':
-    manager.run()
