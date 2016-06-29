@@ -1,7 +1,9 @@
 # coding: utf-8
 
-from flask_alchemydumps.helpers.confirm import confirm
 from unittest import TestCase
+
+from flask_alchemydumps.helpers.confirm import confirm
+
 
 # Python 2 and 3 compatibility (mock and bultins)
 try:

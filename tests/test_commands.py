@@ -1,9 +1,11 @@
 # coding: utf-8
 
 import os
-from .app import app, db, Post, User, SomeControl, Comments
+from unittest import TestCase
+
 from flask.ext.alchemydumps.helpers.backup import Backup
-from unittest import skip, TestCase
+
+from .app import Comments, Post, SomeControl, User, app, db
 
 
 class TestCommands(TestCase):

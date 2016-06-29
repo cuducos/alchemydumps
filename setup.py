@@ -1,6 +1,7 @@
 # coding: utf-8
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+
 
 url = 'https://github.com/cuducos/alchemydumps'
 long_description = 'Check `Flask-AlchemyDumps at GitHub <{}>`_.'.format(url)

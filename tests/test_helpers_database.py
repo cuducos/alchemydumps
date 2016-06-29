@@ -1,8 +1,10 @@
 # coding: utf-8
 
-from .app import app, db, Post, User, SomeControl
-from flask.ext.alchemydumps.helpers.database import AlchemyDumpsDatabase
 from unittest import TestCase
+
+from flask.ext.alchemydumps.helpers.database import AlchemyDumpsDatabase
+
+from .app import Post, SomeControl, User, app, db
 
 
 class TestSQLAlchemyHelper(TestCase):

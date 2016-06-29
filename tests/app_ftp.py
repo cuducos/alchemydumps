@@ -2,9 +2,10 @@
 
 from decouple import config
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager
+from flask.ext.sqlalchemy import SQLAlchemy
 from flask_alchemydumps import AlchemyDumps, AlchemyDumpsCommand
+
 
 # create a Flask app
 app = Flask(__name__)

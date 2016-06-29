@@ -1,17 +1,14 @@
 # coding: utf-8
 
 # Python 2 compatibility with Pyhton 3 import and print
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-# import third party modules
 from flask.ext.script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
-# import alchemydumps helpers
 from .helpers.autoclean import BackupAutoClean
 from .helpers.backup import Backup
 from .helpers.confirm import confirm

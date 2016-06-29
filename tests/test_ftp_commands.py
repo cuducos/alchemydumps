@@ -1,9 +1,11 @@
 # coding: utf-8
 
 import os
-from .app_ftp import app, db, Post, User, SomeControl, Comments
+from unittest import TestCase, skip
+
 from flask.ext.alchemydumps.helpers.backup import Backup
-from unittest import skip, TestCase
+
+from .app_ftp import Comments, Post, SomeControl, User, app, db
 
 
 @skip('Command tests to be refactred')

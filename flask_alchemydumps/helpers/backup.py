@@ -1,9 +1,9 @@
 # coding: utf-8
 
+import ftplib
 import gzip
 import os
 import re
-import ftplib
 from datetime import datetime
 from tempfile import NamedTemporaryFile
 from time import gmtime, strftime
