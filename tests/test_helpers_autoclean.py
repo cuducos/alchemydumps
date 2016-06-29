@@ -1,8 +1,9 @@
 # coding: utf-8
 
-from flask.ext.alchemydumps.helpers.autoclean import BackupAutoClean
 from datetime import date
 from unittest import TestCase
+
+from flask_alchemydumps.helpers.autoclean import BackupAutoClean
 
 
 class TestAutocleanHelper(TestCase):
