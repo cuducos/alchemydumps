@@ -1,7 +1,7 @@
 from ftplib import error_perm
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.backup import Backup, LocalTools
+from flask_alchemydumps.backup import Backup, LocalTools
 
 
 # Python 2 and 3 compatibility (mock)
@@ -21,7 +21,7 @@ class TestBackup(TestCase):
     )
 
     @patch.object(LocalTools, 'normalize_path')
-    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    @patch('flask_alchemydumps.backup.decouple.config')
     def setUp(self, mock_config, mock_path):
         # (respectively: FTP server, FTP # user, FTP password, FTP path, local
         # directory for backups and file prefix)
@@ -61,8 +61,8 @@ class TestBackupFTPAttemps(TestCase):
     # user, FTP password, FTP path, local directory for backups and file prefix
     CONFIG = ('server', 'user', None, 'foobar', 'foobar', 'bkp')
 
-    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
-    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    @patch('flask_alchemydumps.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.backup.decouple.config')
     def test_successful_connection(self, mock_config, mock_ftp):
         mock_config.side_effect = self.CONFIG
         mock_ftp.return_value = MagicMock()
@@ -76,8 +76,8 @@ class TestBackupFTPAttemps(TestCase):
         self.assertTrue(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
-    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
-    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    @patch('flask_alchemydumps.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.backup.decouple.config')
     def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.side_effect = error_perm
@@ -90,8 +90,8 @@ class TestBackupFTPAttemps(TestCase):
         self.assertFalse(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
-    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
-    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    @patch('flask_alchemydumps.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.backup.decouple.config')
     def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.return_value = MagicMock()
@@ -105,8 +105,8 @@ class TestBackupFTPAttemps(TestCase):
         self.assertFalse(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
-    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
-    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    @patch('flask_alchemydumps.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.backup.decouple.config')
     def test_close_connection(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.return_value = MagicMock()

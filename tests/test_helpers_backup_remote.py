@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.backup import RemoteTools
+from flask_alchemydumps.backup import RemoteTools
 
 
 # Python 2 and 3 compatibility (mock)
@@ -41,7 +41,7 @@ class TestRemoteTools(TestCase):
         self.assertTrue(backup.ftp.nlst.called)
         self.assertEqual(expected, files)
 
-    @patch('flask_alchemydumps.helpers.backup.gzip.open')
+    @patch('flask_alchemydumps.backup.gzip.open')
     def test_create_file(self, mock_open):
         self.mock_ftp.host = 'f.oo'
         self.mock_ftp.pwd.return_value = '/bar'
@@ -57,7 +57,7 @@ class TestRemoteTools(TestCase):
         self.assertTrue(storbinary_args.startswith('STOR foobar.gz'))
         self.assertEqual(backup.path + 'foobar.gz', created)
 
-    @patch('flask_alchemydumps.helpers.backup.gzip.open')
+    @patch('flask_alchemydumps.backup.gzip.open')
     def test_read_file(self, mock_open):
         mock_handler = mock_open.return_value.__enter__.return_value
 

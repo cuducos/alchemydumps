@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.backup import CommonTools
+from flask_alchemydumps.backup import CommonTools
 
 
 class TestBackup(TestCase):

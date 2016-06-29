@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# Python 2 compatibility with Pyhton 3 import and print
 from __future__ import absolute_import, print_function
 
 import os
@@ -9,10 +8,10 @@ from flask_script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
-from flask_alchemydumps.helpers.autoclean import BackupAutoClean
-from flask_alchemydumps.helpers.backup import Backup
-from flask_alchemydumps.helpers.confirm import Confirm
-from flask_alchemydumps.helpers.database import AlchemyDumpsDatabase
+from flask_alchemydumps.autoclean import BackupAutoClean
+from flask_alchemydumps.backup import Backup
+from flask_alchemydumps.confirm import Confirm
+from flask_alchemydumps.database import AlchemyDumpsDatabase
 
 
 class _AlchemyDumpsConfig(object):
@@ -55,7 +54,8 @@ def create():
                                                            class_name,
                                                            full_path))
         else:
-            print('==> Error creating {} at {}'.format(name, backup.target.path))
+            print('==> Error creating {} at {}'.format(name,
+                                                       backup.target.path))
     backup.close_ftp()
 
 

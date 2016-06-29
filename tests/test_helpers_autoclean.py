@@ -3,7 +3,7 @@
 from datetime import date
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.autoclean import BackupAutoClean
+from flask_alchemydumps.autoclean import BackupAutoClean
 
 
 class TestAutocleanHelper(TestCase):

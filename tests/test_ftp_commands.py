@@ -3,7 +3,7 @@
 import os
 from unittest import TestCase, skip
 
-from flask.ext.alchemydumps.helpers.backup import Backup
+from flask.ext.alchemydumps.backup import Backup
 
 from .app_ftp import Comments, Post, SomeControl, User, app, db
 
