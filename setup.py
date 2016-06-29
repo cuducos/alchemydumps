@@ -37,8 +37,6 @@ setup(
         'Unipath',
         'python-decouple',
     ],
-    test_requires=['tox'],
-    test_suite='tox',
     include_package_data=True,
     zip_safe=False
 )

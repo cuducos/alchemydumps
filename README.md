@@ -1,11 +1,10 @@
-# AlchemyDumps
+# AlchemyDumps [![Latest release](https://img.shields.io/pypi/v/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
 
 [![Development Status: Alpha](https://img.shields.io/pypi/status/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
-[![Latest release](https://img.shields.io/pypi/v/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
+[![Python Version](https://img.shields.io/pypi/pyversions/Flask-AlchemyDumps.svg)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
 [![Travis CI](https://img.shields.io/travis/cuducos/alchemydumps.svg?style=flat)](https://travis-ci.org/cuducos/alchemydumps)
-[![Downloads](https://img.shields.io/pypi/dm/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
-[![Python Version](https://img.shields.io/pypi/pyversions/Flask-AlchemyDumps.svg)](https://pypi.python.org/pypi/Flask-AlchemyDumps) 
-[![License](https://img.shields.io/pypi/l/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
+[![Coverage Status](https://coveralls.io/repos/github/cuducos/alchemydumps/badge.svg?branch=master)](https://coveralls.io/github/cuducos/alchemydumps?branch=master)
+
 
 Do you use [Flask](http://flask.pocoo.org>) with [SQLAlchemy](http://www.sqlalchemy.org/) and [Flask-Script](http://flask-script.readthedocs.org/) ? Wow, what a coincidence!
 
@@ -289,14 +288,9 @@ Output:
 If you wanna run the tests:
 
 ```console
-git clone git@github.com:cuducos/alchemydumps.git
-cd /alchemydumps
-pip install -r tests/requirements.txt
-python setup.py develop
-nosetests
+pip install tox
+tox
 ```
-
-If you want to include remote (FTP) tests you have to rename `/tests/.env.sample` to `/tests/.env` and edit it with valid FTP credentials.
 
 ## Contributing
 

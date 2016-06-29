@@ -4,5 +4,6 @@ env:
   - TOXENV=py27
   - TOXENV=py34
   - TOXENV=py35
+  - TOXENV=cover
 install: pip install tox
 script: tox
