@@ -1,104 +1,110 @@
-# coding: utf-8
-
-from .app import app
-from flask.ext.alchemydumps.helpers.backup import Backup
-from time import gmtime, strftime
-from unipath import Path
+from ftplib import error_perm
+from time import sleep
 from unittest import TestCase
+from unittest.mock import MagicMock, patch
+
+from flask_alchemydumps.helpers.backup import Backup
 
 
-class TestIdentificationHelper(TestCase):
+class TestBackup(TestCase):
 
-    def tearDown(self):
+    FILES = (
+        'BRA-19940704123000-USA.gz',
+        'BRA-19940709163000-NED.gz',
+        'BRA-19940713123000-SWE.gz',
+        'BRA-19940717123000-ITA.gz',
+    )
 
-        # clean up files and directories
-        basedir = app.extensions['alchemydumps'].basedir
-        directory = basedir.child('alchemydumps')
-        directory.rmtree()
+    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    def setUp(self, mock_config, mock_backup):
+        # (respectively: FTP server, FTP # user, FTP password, FTP path, local
+        # directory for backups and file prefix)
+        mock_config.side_effect = (None, None, None, None, 'foobar', 'BRA')
+        self.backup = Backup()
+        self.backup.files = self.FILES
 
-    def test_filter_files(self):
-        with app.app_context():
-            backup = Backup()
-            date_ids = ['20141115172107', '20141112113214']
-            class_names = ['User', 'Post']
-            template = 'db-bkp-{}-{}.gz'
-            files = list()
-            for date_id in date_ids:
-                for class_name in class_names:
-                    files.append(template.format(date_id, class_name))
-            expected = [template.format(date_ids[0], c) for c in class_names]
-            backup.files = files
-            self.assertEqual(backup.filter_files(date_ids[0]), expected)
+    def test_get_timestamps(self):
+        expected = [
+            '19940704123000',
+            '19940709163000',
+            '19940713123000',
+            '19940717123000'
+        ]
+        self.assertEqual(expected, self.backup.get_timestamps())
 
-    def test_date_id_helpers(self):
-        with app.app_context():
-            backup = Backup()
-            reference = gmtime()
-            date_id = backup.create_id(reference)
-            self.assertEqual(backup.parsed_id(date_id),
-                             strftime('%b %d, %Y at %H:%M:%S', reference))
-
-    def test_get_ids(self):
-        with app.app_context():
-
-            # create some files
-            backup = Backup()
-            date_ids = [
-                '20110824045557',
-                '20100106120931',
-                '20090728192328',
-                '20100112115416'
-            ]
-            class_names = ['Post', 'User']
-            for date_id in date_ids:
-                for class_name in class_names:
-                    name = backup.get_name(date_id, class_name)
-                    backup.create_file(name, '')
-
-            # restart Backup() and assert
-            backup = Backup()
-            self.assertEqual(sorted(date_ids), sorted(backup.get_ids()))
-
-            # clean up to avoid messing up other tests
-            for name in backup.files:
-                backup.delete_file(name)
-            backup = Backup()
-            self.assertEqual(len(backup.files), 0)
+    def test_by_timestamp(self):
+        expected = ['BRA-19940717123000-ITA.gz']
+        self.assertEqual(expected, list(self.backup.by_timestamp('19940717123000')))
 
     def test_valid(self):
-        with app.app_context():
+        self.assertTrue(self.backup.valid('19940704123000'))
+        self.assertFalse(self.backup.valid('19980712210000'))
 
-            # create some files
-            backup = Backup()
-            date_ids = [
-                '20110824045557',
-                '20100106120931',
-                '20090728192328',
-                '20100112115416'
-            ]
-            class_names = ['Post', 'User']
-            for date_id in date_ids:
-                for class_name in class_names:
-                    name = backup.get_name(date_id, class_name)
-                    backup.create_file(name, '')
-
-            # restart Backup() and assert
-            backup = Backup()
-            self.assertTrue(backup.valid('20110824045557'))
-            self.assertFalse(backup.valid('20110824045--'))
-
-            # clean up to avoid messing up other tests
-            for name in backup.files:
-                backup.delete_file(name)
-            backup = Backup()
-            self.assertEqual(len(backup.files), 0)
+    def test_get_name(self):
+        expected = 'BRA-{}-GER.gz'.format(self.backup.target.TIMESTAMP)
+        self.assertEqual(expected, self.backup.get_name('GER'))
 
 
-class TestPath(TestCase):
+class TestBackupFTPAttemps(TestCase):
 
-    def test_get_path_with_local_storage(self):
-        with app.app_context():
-            backup = Backup()
-            path = Path(backup.path)
-            self.assertTrue(path.exists())
-            self.assertTrue(path.isdir())
+    # decouple.config mock side effects (respectively: FTP server, FTP
+    # user, FTP password, FTP path, local directory for backups and file prefix
+    CONFIG = ('server', 'user', None, 'foobar', 'foobar', 'bkp')
+
+    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    def test_successful_connection(self, mock_config, mock_ftp):
+        mock_config.side_effect = self.CONFIG
+        mock_ftp.return_value = MagicMock()
+        mock_ftp.return_value.cwd.return_value = '250 foobar'
+
+        backup = Backup()
+
+        self.assertEqual(6, mock_config.call_count)
+        self.assertTrue(mock_ftp.called)
+        self.assertTrue(mock_ftp.return_value.cwd.called)
+        self.assertTrue(backup.ftp)
+
+    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_local):
+        mock_config.side_effect = self.CONFIG
+        mock_ftp.side_effect = error_perm
+
+        backup = Backup()
+
+        self.assertEqual(6, mock_config.call_count)
+        self.assertTrue(mock_ftp.called)
+        self.assertFalse(mock_ftp.return_value.cwd.called)
+        self.assertFalse(backup.ftp)
+
+    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_local):
+        mock_config.side_effect = self.CONFIG
+        mock_ftp.return_value = MagicMock()
+        mock_ftp.return_value.cwd.return_value = '404 foobar'
+
+        backup = Backup()
+
+        self.assertEqual(6, mock_config.call_count)
+        self.assertTrue(mock_ftp.called)
+        self.assertTrue(mock_ftp.return_value.cwd.called)
+        self.assertFalse(backup.ftp)
+
+    @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
+    @patch('flask_alchemydumps.helpers.backup.decouple.config')
+    def test_close_connection(self, mock_config, mock_ftp):
+        mock_config.side_effect = self.CONFIG
+        mock_ftp.return_value = MagicMock()
+        mock_ftp.return_value.cwd.return_value = '250 foobar'
+
+        backup = Backup()
+        backup.close_ftp()
+
+        self.assertEqual(6, mock_config.call_count)
+        self.assertTrue(mock_ftp.called)
+        self.assertTrue(mock_ftp.return_value.quit.called)

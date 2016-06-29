@@ -4,6 +4,8 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
+import os
+
 # import third party modules
 from flask.ext.script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
@@ -47,41 +49,42 @@ def create():
     alchemy = AlchemyDumpsDatabase()
     data = alchemy.get_data()
     backup = Backup()
-    date_id = backup.create_id()
     for class_name in data.keys():
-        name = backup.get_name(date_id, class_name)
-        full_path = backup.create_file(name, data[class_name])
+        name = backup.get_name(class_name)
+        full_path = backup.target.create_file(name, data[class_name])
         rows = len(alchemy.parse_data(data[class_name]))
         if full_path:
             print('==> {} rows from {} saved as {}'.format(rows,
                                                            class_name,
                                                            full_path))
         else:
-            print('==> Error creating {} at {}'.format(name, backup.path))
-    backup.close_connection()
+            print('==> Error creating {} at {}'.format(name, backup.target.path))
+    backup.close_ftp()
 
 
 @AlchemyDumpsCommand.command
 def history():
     """List existing backups"""
 
-    # if no files
     backup = Backup()
+    backup.files = tuple(backup.target.get_files())
+
+    # if no files
     if not backup.files:
-        print('==> No backups found at {}.'.format(backup.path))
+        print('==> No backups found at {}.'.format(backup.target.path))
         return None
 
     # create output
-    file_ids = backup.get_ids()
-    groups = [{'id': i, 'files': backup.filter_files(i)} for i in file_ids]
+    timestamps = backup.get_timestamps()
+    groups = [{'id': i, 'files': backup.filter_files(i)} for i in timestamps]
     for output in groups:
         if output['files']:
-            date_formated = backup.parsed_id(output['id'])
+            date_formated = backup.parse_timestamp(output['id'])
             print('\n==> ID: {} (from {})'.format(output['id'], date_formated))
             for file_name in output['files']:
-                print('    {}{}'.format(backup.path, file_name))
+                print('    {}{}'.format(backup.target.path, file_name))
     print('')
-    backup.close_connection()
+    backup.close_ftp()
 
 
 @AlchemyDumpsCommand.option('-d',
@@ -93,40 +96,38 @@ def history():
 def restore(date_id):
     """Restore a backup based on the date part of the backup files"""
 
-    # check if date/id is valid
     alchemy = AlchemyDumpsDatabase()
     backup = Backup()
-    if backup.valid(date_id):
 
-        # loop through backup files
-        for mapped_class in alchemy.get_mapped_classes():
-            class_name = mapped_class.__name__
-            name = backup.get_name(date_id, class_name)
-            if name in backup.files:
+    # loop through mapped classes
+    for mapped_class in alchemy.get_mapped_classes():
+        class_name = mapped_class.__name__
+        name = backup.get_name(class_name, date_id)
+        if os.path.exists(os.path.join(backup.target.path, name)):
 
-                # read file contents
-                contents = backup.read_file(name)
-                fails = list()
+            # read file contents
+            contents = backup.target.read_file(name)
+            fails = list()
 
-                # restore to the db
-                db = alchemy.db()
-                for row in alchemy.parse_data(contents):
-                    try:
-                        db.session.merge(row)
-                        db.session.commit()
-                    except (IntegrityError, InvalidRequestError):
-                        db.session.rollback()
-                        fails.append(row)
+            # restore to the db
+            db = alchemy.db()
+            for row in alchemy.parse_data(contents):
+                try:
+                    db.session.merge(row)
+                    db.session.commit()
+                except (IntegrityError, InvalidRequestError):
+                    db.session.rollback()
+                    fails.append(row)
 
-                # print summary
-                status = 'partially' if len(fails) else 'totally'
-                print('==> {} {} restored.'.format(name, status))
-                for f in fails:
-                    print('    Restore of {} failed.'.format(f))
-            else:
-                name = backup.get_name(date_id, class_name)
-                msg = '==> No file found for {} ({}{} does not exist).'
-                print(msg.format(class_name, backup.path, name))
+            # print summary
+            status = 'partially' if len(fails) else 'totally'
+            print('==> {} {} restored.'.format(name, status))
+            for f in fails:
+                print('    Restore of {} failed.'.format(f))
+        else:
+            os.system('ls alchemydumps-backups')
+            msg = '==> No file found for {} ({}{} does not exist).'
+            print(msg.format(class_name, backup.target.path, name))
 
 
 @AlchemyDumpsCommand.option('-d',
@@ -149,17 +150,17 @@ def remove(date_id, assume_yes=False):
     if backup.valid(date_id):
 
         # List files to be deleted
-        delete_list = backup.filter_files(date_id)
+        delete_list = tuple(backup.by_timestamp(date_id))
         print('==> Do you want to delete the following files?')
         for name in delete_list:
-            print('    {}{}'.format(backup.path, name))
+            print('    {}{}'.format(backup.target.path, name))
 
         # delete
         if confirm(assume_yes):
             for name in delete_list:
-                backup.delete_file(name)
+                backup.target.delete_file(name)
                 print('    {} deleted.'.format(name))
-    backup.close_connection()
+    backup.close_ftp()
 
 
 @AlchemyDumpsCommand.option('-y',
@@ -179,33 +180,40 @@ def autoclean(assume_yes=False):
 
     # check if there are backups
     backup = Backup()
+    backup.files = tuple(backup.target.get_files())
     if not backup.files:
         print('==> No backups found.')
         return None
 
     # get black and white list
-    autoclean = BackupAutoClean(backup.get_ids())
-    if not autoclean.black_list:
+    autoclean = BackupAutoClean(backup.get_timestamps())
+    white_list = tuple(autoclean.white_list)
+    black_list = tuple(autoclean.black_list)
+    if not black_list:
         print('==> No backup to be deleted.')
         return None
 
-    # print the list of files to be kept/deleted
-    black_list = list()
-    for l in ('white_list', 'black_list'):
-        msg = 'kept' if l == 'white_list' else 'deleted'
-        total = len(getattr(autoclean, l))
-        print('\n==> {} backups will be {}:'.format(total, msg))
-        for date_id in getattr(autoclean, l):
-            date_formated = backup.parsed_id(date_id)
-            print('\n    ID: {} (from {})'.format(date_id, date_formated))
-            for f in backup.filter_files(date_id):
-                print('    {}{}'.format(backup.path, f))
-                if l == 'black_list':
-                    black_list.append(f)
+    # print the list of files to be kept
+    print('\n==> {} backups will be kept:'.format(len(white_list)))
+    for date_id in white_list:
+        date_formated = backup.target.parse_timestamp(date_id)
+        print('\n    ID: {} (from {})'.format(date_id, date_formated))
+        for f in backup.by_timestamp(date_id):
+            print('    {}{}'.format(backup.target.path, f))
+
+    # print the list of files to be deleted
+    delete_list = list()
+    print('\n==> {} backups will be deleted:'.format(len(black_list)))
+    for date_id in black_list:
+        date_formated = backup.target.parse_timestamp(date_id)
+        print('\n    ID: {} (from {})'.format(date_id, date_formated))
+        for f in backup.by_timestamp(date_id):
+            print('    {}{}'.format(backup.target.path, f))
+            delete_list.append(f)
 
     # delete
     if confirm(assume_yes):
-        for name in black_list:
-            backup.delete_file(name)
+        for name in delete_list:
+            backup.target.delete_file(name)
             print('    {} deleted.'.format(name))
-    backup.close_connection()
+    backup.close_ftp()
