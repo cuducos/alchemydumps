@@ -52,7 +52,7 @@ class TestRemoteTools(TestCase):
         storbinary_args = backup.ftp.storbinary.call_args[0][0]
 
         self.assertTrue(mock_open.called)
-        self.assertEqual(contents, mock_handler.write.call_args[0][0])
+        mock_handler.write.assert_called_once_with(contents)
         self.assertTrue(storbinary_args.startswith('STOR foobar.gz'))
         self.assertEqual(backup.path + 'foobar.gz', created)
 
@@ -70,5 +70,4 @@ class TestRemoteTools(TestCase):
     def test_delete_file(self):
         backup = RemoteTools(self.mock_ftp)
         backup.delete_file('foobar.gz')
-
-        self.assertEqual('foobar.gz', backup.ftp.delete.call_args[0][0])
+        backup.ftp.delete.assert_called_once_with('foobar.gz')

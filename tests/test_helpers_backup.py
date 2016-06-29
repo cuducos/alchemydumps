@@ -70,28 +70,28 @@ class TestBackupFTPAttemps(TestCase):
         backup = Backup()
 
         self.assertEqual(6, mock_config.call_count)
-        self.assertTrue(mock_ftp.called)
-        self.assertTrue(mock_ftp.return_value.cwd.called)
+        mock_ftp.assert_called_once_with('server', 'user', None)
+        mock_ftp.return_value.cwd.assert_called_once_with('foobar')
         self.assertTrue(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
-    def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_local):
+    def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.side_effect = error_perm
 
         backup = Backup()
 
         self.assertEqual(6, mock_config.call_count)
-        self.assertTrue(mock_ftp.called)
+        mock_ftp.assert_called_once_with('server', 'user', None)
         self.assertFalse(mock_ftp.return_value.cwd.called)
         self.assertFalse(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
-    def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_local):
+    def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.return_value = MagicMock()
         mock_ftp.return_value.cwd.return_value = '404 foobar'
@@ -99,8 +99,8 @@ class TestBackupFTPAttemps(TestCase):
         backup = Backup()
 
         self.assertEqual(6, mock_config.call_count)
-        self.assertTrue(mock_ftp.called)
-        self.assertTrue(mock_ftp.return_value.cwd.called)
+        mock_ftp.assert_called_once_with('server', 'user', None)
+        mock_ftp.return_value.cwd.assert_called_once_with('foobar')
         self.assertFalse(backup.ftp)
 
     @patch.object(LocalTools, 'normalize_path')
@@ -115,5 +115,5 @@ class TestBackupFTPAttemps(TestCase):
         backup.close_ftp()
 
         self.assertEqual(6, mock_config.call_count)
-        self.assertTrue(mock_ftp.called)
-        self.assertTrue(mock_ftp.return_value.quit.called)
+        mock_ftp.assert_called_once_with('server', 'user', None)
+        mock_ftp.return_value.quit.called_once_with()

@@ -21,7 +21,7 @@ class TestLocalTools(TestCase):
     def test_normalize_path(self, mock_mkdir, mock_exists):
         mock_exists.return_value = False
         backup = LocalTools(self.backup_dir)
-        self.assertTrue(self.backup_dir + os.sep, mock_mkdir.call_args[0][0])
+        mock_mkdir.assert_called_once_with(self.backup_dir)
         self.assertEqual(self.backup_dir + os.sep, backup.path)
 
     @patch('flask_alchemydumps.helpers.backup.os.path.exists')
@@ -44,7 +44,7 @@ class TestLocalTools(TestCase):
             'BRA-19940704123000-USA.gz',
             'BRA-19940709163000-NED.gz',
         )
-        self.assertTrue(mock_listdir.called)
+        mock_listdir.assert_called_once_with(backup.path)
         self.assertEqual(4, mock_isfile.call_count)
         self.assertEqual(expected, files)
 
@@ -60,8 +60,8 @@ class TestLocalTools(TestCase):
 
         backup = LocalTools(self.backup_dir)
         created = backup.create_file('foobar.gz', contents)
-        self.assertEqual(file_path, mock_open.call_args[0][0])
-        self.assertEqual(contents, mock_handler.write.call_args[0][0])
+        mock_open.assert_called_once_with(file_path, 'wb')
+        mock_handler.write.assert_called_once_with(contents)
         self.assertEqual(file_path, created)
 
     @patch('flask_alchemydumps.helpers.backup.os.path.exists')
@@ -75,8 +75,8 @@ class TestLocalTools(TestCase):
 
         backup = LocalTools(self.backup_dir)
         backup.read_file('foobar.gz')
-        self.assertEqual(file_path, mock_open.call_args[0][0])
-        self.assertTrue(mock_handler.read.called)
+        mock_open.assert_called_once_with(file_path, 'rb')
+        mock_handler.read.assert_called_once_with()
 
     @patch('flask_alchemydumps.helpers.backup.os.path.exists')
     @patch('flask_alchemydumps.helpers.backup.os.mkdir')
@@ -88,4 +88,4 @@ class TestLocalTools(TestCase):
 
         backup = LocalTools(self.backup_dir)
         backup.delete_file('foobar.gz')
-        self.assertEqual(file_path, mock_remove.call_args[0][0])
+        mock_remove.assert_called_once_with(file_path)
