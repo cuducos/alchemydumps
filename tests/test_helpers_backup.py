@@ -1,7 +1,7 @@
 from ftplib import error_perm
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.backup import Backup, CommonTools
+from flask_alchemydumps.helpers.backup import Backup, LocalTools
 
 # Python 2 and 3 compatibility (mock)
 try:
@@ -19,17 +19,17 @@ class TestBackup(TestCase):
         'BRA-19940717123000-ITA.gz',
     )
 
-    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
-    def setUp(self, mock_config, mock_backup):
+    def setUp(self, mock_config, mock_path):
         # (respectively: FTP server, FTP # user, FTP password, FTP path, local
         # directory for backups and file prefix)
         mock_config.side_effect = (None, None, None, None, 'foobar', 'BRA')
-        mock_backup.return_value.get_timestamp = CommonTools().get_timestamp
         self.backup = Backup()
         self.backup.files = self.FILES
 
-    def test_get_timestamps(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_get_timestamps(self, mock_path):
         expected = [
             '19940704123000',
             '19940709163000',
@@ -38,15 +38,18 @@ class TestBackup(TestCase):
         ]
         self.assertEqual(expected, self.backup.get_timestamps())
 
-    def test_by_timestamp(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_by_timestamp(self, mock_path):
         expected = ['BRA-19940717123000-ITA.gz']
         self.assertEqual(expected, list(self.backup.by_timestamp('19940717123000')))
 
-    def test_valid(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_valid(self, mock_path):
         self.assertTrue(self.backup.valid('19940704123000'))
         self.assertFalse(self.backup.valid('19980712210000'))
 
-    def test_get_name(self):
+    @patch.object(LocalTools, 'normalize_path')
+    def test_get_name(self, mock_path):
         expected = 'BRA-{}-GER.gz'.format(self.backup.target.TIMESTAMP)
         self.assertEqual(expected, self.backup.get_name('GER'))
 
@@ -71,7 +74,7 @@ class TestBackupFTPAttemps(TestCase):
         self.assertTrue(mock_ftp.return_value.cwd.called)
         self.assertTrue(backup.ftp)
 
-    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
     def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_local):
@@ -85,7 +88,7 @@ class TestBackupFTPAttemps(TestCase):
         self.assertFalse(mock_ftp.return_value.cwd.called)
         self.assertFalse(backup.ftp)
 
-    @patch('flask_alchemydumps.helpers.backup.LocalTools')
+    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
     def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_local):
@@ -100,9 +103,10 @@ class TestBackupFTPAttemps(TestCase):
         self.assertTrue(mock_ftp.return_value.cwd.called)
         self.assertFalse(backup.ftp)
 
+    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.helpers.backup.ftplib.FTP')
     @patch('flask_alchemydumps.helpers.backup.decouple.config')
-    def test_close_connection(self, mock_config, mock_ftp):
+    def test_close_connection(self, mock_config, mock_ftp, mock_path):
         mock_config.side_effect = self.CONFIG
         mock_ftp.return_value = MagicMock()
         mock_ftp.return_value.cwd.return_value = '250 foobar'
