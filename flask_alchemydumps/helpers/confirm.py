@@ -12,6 +12,4 @@ def confirm(assume_yes=False):
         return True
     message = '\n==> Press "Y" to confirm, or anything else to abort: '
     confirmation = input(message)
-    if confirmation.lower() == 'y':
-        return True
-    return False
+    return True if str(confirmation).lower() == 'y' else False

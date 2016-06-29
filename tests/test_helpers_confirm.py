@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from flask.ext.alchemydumps.helpers.confirm import confirm
+from flask_alchemydumps.helpers.confirm import confirm
 from unittest import TestCase
 
 # Python 2 and 3 compatibility (mock and bultins)
@@ -25,21 +25,18 @@ class TestConfirmHelper(TestCase):
         self.assertTrue(confirm())
 
     @patch(input_function)
-    def test_no_auto_do_not_confirm(self, mocked_input):
-        mocked_input.return_value = 'x'
-        self.assertFalse(confirm())
-
-    @patch(input_function)
-    def test_no_auto_do_blank(self, mocked_input):
-        mocked_input.return_value = ''
-        self.assertFalse(confirm())
+    def test_no_auto_confirm_when_something_else(self, mocked_input):
+        possibilities = ('x', 0, 1, '', None, False)
+        mocked_input.side_effect = possibilities
+        for user_input in possibilities:
+            self.assertFalse(confirm())
 
     @patch(input_function)
     def test_auto_confirm(self, mocked_input):
         mocked_input.return_value = ''
-        self.assertTrue(confirm(True))
-        self.assertTrue(confirm('Y'))
-        self.assertTrue(confirm(1))
-        self.assertFalse(confirm(False))
-        self.assertFalse(confirm(0))
-        self.assertFalse(confirm(''))
+        ok_possibilities = (True, 'Y', 1)
+        cancel_possibilities = (False, '', 0)
+        for default_value in ok_possibilities:
+            self.assertTrue(confirm(default_value), default_value)
+        for default_value in cancel_possibilities:
+            self.assertFalse(confirm(default_value), default_value)
