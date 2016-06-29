@@ -7,12 +7,12 @@ from itertools import chain
 
 class BackupAutoClean(object):
 
-    def __init__(self, dates=list(), today=None):
+    def __init__(self, dates=None, today=None):
         """
         :param dates: list of date ids (in string format)
         :param today: datetime object
         """
-        self.dates = sorted(dates, reverse=True)
+        self.dates = sorted(dates, reverse=True) if dates else []
         self.today = today or date.today()
         self.white_list = list()
         self.black_list = list()
@@ -71,13 +71,13 @@ class BackupAutoClean(object):
         backups_year = list()
         backups_older = list()
         for timestamp in self.dates:
-            as_datetime = datetime.strptime(timestamp, '%Y%m%d%H%M%S')
-            as_date = date(as_datetime.year, as_datetime.month, as_datetime.day)
-            if as_date >= last_w:
+            datetime_ = datetime.strptime(timestamp, '%Y%m%d%H%M%S')
+            date_ = date(datetime_.year, datetime_.month, datetime_.day)
+            if date_ >= last_w:
                 backups_week.append(timestamp)
-            elif as_date >= last_m:
+            elif date_ >= last_m:
                 backups_month.append(timestamp)
-            elif as_date >= last_y:
+            elif date_ >= last_y:
                 backups_year.append(timestamp)
             else:
                 backups_older.append(timestamp)

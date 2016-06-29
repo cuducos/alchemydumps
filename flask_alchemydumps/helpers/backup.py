@@ -145,14 +145,17 @@ class RemoteTools(CommonTools):
 
 class Backup(object):
 
+    DIR = 'alchemydumps-backup'
+    PRE = 'db-bkp'
+
     def __init__(self):
         """
         Bridge backups to local file system or to FTP server according to env
         vars set to allow FTP usage (see connect method).
         """
         self.ftp = self.ftp_connect()
-        self.dir = decouple.config('ALCHEMYDUMPS_DIR', default='alchemydumps-backups')
-        self.prefix = decouple.config('ALCHEMYDUMPS_PREFIX', default='db-bkp')
+        self.dir = decouple.config('ALCHEMYDUMPS_DIR', default=self.DIR)
+        self.prefix = decouple.config('ALCHEMYDUMPS_PREFIX', default=self.PRE)
         self.files = None
         self.target = self.get_target()
 

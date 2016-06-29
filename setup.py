@@ -3,14 +3,14 @@
 from setuptools import find_packages, setup
 
 
-url = 'https://github.com/cuducos/alchemydumps'
-long_description = 'Check `Flask-AlchemyDumps at GitHub <{}>`_.'.format(url)
+URL = 'https://github.com/cuducos/alchemydumps'
+LONG_DESCRIPTION = 'Check `Flask-AlchemyDumps at GitHub <{}>`_.'.format(URL)
 
 setup(
     name='Flask-AlchemyDumps',
     version='0.0.10',
     description='SQLAlchemy backup/dump tool for Flask',
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
@@ -24,7 +24,7 @@ setup(
         'Topic :: Utilities'
     ],
     keywords='backup, sqlalchemy, flask, restore, dumps, serialization, ftp',
-    url=url,
+    url=URL,
     author='Eduardo Cuducos',
     author_email='cuducos@gmail.com',
     license='MIT',

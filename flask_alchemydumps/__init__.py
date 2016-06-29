@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 
 import os
 
-from flask.ext.script import Manager
+from flask_script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
@@ -184,9 +184,9 @@ def autoclean(assume_yes=False):
         return None
 
     # get black and white list
-    autoclean = BackupAutoClean(backup.get_timestamps())
-    white_list = tuple(autoclean.white_list)
-    black_list = tuple(autoclean.black_list)
+    cleaning = BackupAutoClean(backup.get_timestamps())
+    white_list = cleaning.white_list
+    black_list = cleaning.black_list
     if not black_list:
         print('==> No backup to be deleted.')
         return None
