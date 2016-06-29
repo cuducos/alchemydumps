@@ -1,7 +1,7 @@
 from ftplib import error_perm
 from unittest import TestCase
 
-from flask_alchemydumps.helpers.backup import Backup
+from flask_alchemydumps.helpers.backup import Backup, CommonTools
 
 # Python 2 and 3 compatibility (mock)
 try:
@@ -25,6 +25,7 @@ class TestBackup(TestCase):
         # (respectively: FTP server, FTP # user, FTP password, FTP path, local
         # directory for backups and file prefix)
         mock_config.side_effect = (None, None, None, None, 'foobar', 'BRA')
+        mock_backup.return_value.get_timestamp = CommonTools().get_timestamp
         self.backup = Backup()
         self.backup.files = self.FILES
 
