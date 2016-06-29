@@ -73,10 +73,10 @@ def history():
 
     # create output
     timestamps = backup.get_timestamps()
-    groups = [{'id': i, 'files': backup.filter_files(i)} for i in timestamps]
+    groups = [{'id': i, 'files': backup.by_timestamp(i)} for i in timestamps]
     for output in groups:
         if output['files']:
-            date_formated = backup.parse_timestamp(output['id'])
+            date_formated = backup.target.parse_timestamp(output['id'])
             print('\n==> ID: {} (from {})'.format(output['id'], date_formated))
             for file_name in output['files']:
                 print('    {}{}'.format(backup.target.path, file_name))

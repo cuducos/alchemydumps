@@ -1,10 +1,11 @@
 # coding: utf-8
 
 import os
+from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from flask_alchemydumps import create, restore, remove, autoclean
+from flask_alchemydumps import create, history, restore, remove, autoclean
 from flask_alchemydumps.backup import Backup, LocalTools
 
 from .app import Comments, Post, SomeControl, User, app, db
@@ -52,7 +53,7 @@ class TestCommands(TestCase):
         self.db.drop_all()
 
         # delete temp directory
-        os.rmdir(self.dir)
+        rmtree(self.dir)
 
     @patch.object(LocalTools, 'normalize_path')
     def test_create_restore_remove(self, mock_path):
@@ -157,6 +158,7 @@ class TestCommands(TestCase):
                     backup.target.create_file(name, ''.encode())
 
             # assert files were created
+            history()
             backup = Backup()
             backup.files = backup.target.get_files()
             expected_count = len(class_names) * len(date_ids)
