@@ -3,9 +3,10 @@
 import os
 from .app import app, db, Post, User, SomeControl, Comments
 from flask.ext.alchemydumps.helpers.backup import Backup
-from unittest import TestCase
+from unittest import skip, TestCase
 
 
+@skip('Command tests to be refactred')
 class TestCommands(TestCase):
 
     def setUp(self):
