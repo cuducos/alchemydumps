@@ -1,9 +1,13 @@
 from ftplib import error_perm
-from time import sleep
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
 
 from flask_alchemydumps.helpers.backup import Backup
+
+# Python 2 and 3 compatibility (mock)
+try:
+    from unittest.mock import MagicMock, patch
+except ImportError:
+    from mock import MagicMock, patch
 
 
 class TestBackup(TestCase):

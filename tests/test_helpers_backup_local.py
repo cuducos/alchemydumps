@@ -1,8 +1,13 @@
 import os
 from unittest import TestCase
-from unittest.mock import patch
 
 from flask_alchemydumps.helpers.backup import LocalTools
+
+# Python 2 and 3 compatibility (mock)
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 
 class TestLocalTools(TestCase):

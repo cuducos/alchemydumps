@@ -1,7 +1,12 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
 
 from flask_alchemydumps.helpers.backup import RemoteTools
+
+# Python 2 and 3 compatibility (mock)
+try:
+    from unittest.mock import MagicMock, patch
+except ImportError:
+    from mock import MagicMock, patch
 
 
 class TestRemoteTools(TestCase):
