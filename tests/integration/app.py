@@ -1,18 +1,14 @@
 # coding: utf-8
 
-from tempfile import NamedTemporaryFile
-
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask_alchemydumps import AlchemyDumps
+from flask_sqlalchemy import SQLAlchemy
 
-# temporary database
-sqlite = 'sqlite:///' + NamedTemporaryFile().name
 
 # create a Flask app
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = sqlite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 db = SQLAlchemy(app)
 alchemydumps = AlchemyDumps(app, db)
 
