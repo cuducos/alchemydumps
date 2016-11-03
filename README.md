@@ -16,6 +16,8 @@ You can save it locally or in a remote server via FTP.
 
 > **WARNING** [**@baumatron**](https://github.com/baumatron)'ve [found an important bug](https://github.com/cuducos/alchemydumps/issues/13): at this time this package won't backup [non-standard mappings](http://docs.sqlalchemy.org/en/latest/orm/nonstandard_mappings.html), such as [many-to-many association tables](http://docs.sqlalchemy.org/en/latest/orm/basic_relationships.html#many-to-many). This is still an open issue and I have no expectation to fix is in the following weeks — **_pull requests_ are more tham welcomed**.
 
+> **I can't maintain this package anymore and I'd be happy to _donate_ it to anyone willing to take it further** Just drop a line ; )
+
 ## Install
 
 First install the package: `pip install Flask-AlchemyDumps`
