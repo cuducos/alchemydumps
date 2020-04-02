@@ -1,7 +1,7 @@
 from ftplib import error_perm
 from unittest import TestCase
 
-from flask_alchemydumps.backup import Backup, LocalTools
+from flask_alchemydumps.helper.backup import Backup, LocalTools
 
 
 # Python 2 and 3 compatibility (mock)

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from flask import current_app
+from sqlalchemy import Sequence
 from sqlalchemy.ext.serializer import dumps, loads
 
 
@@ -41,3 +42,8 @@ class AlchemyDumpsDatabase(object):
         """Loads a dump and convert it into rows """
         db = self.db()
         return loads(contents, db.metadata, db.session)
+
+    def get_next_sequence(self, sequence_name):
+        db = self.db()
+        seq = Sequence(sequence_name)
+        return db.session.execute(seq)
