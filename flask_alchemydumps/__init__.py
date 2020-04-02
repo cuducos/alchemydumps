@@ -8,10 +8,10 @@ from flask_script import Manager
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from unipath import Path
 
-from flask_alchemydumps.autoclean import BackupAutoClean
-from flask_alchemydumps.backup import Backup
-from flask_alchemydumps.confirm import Confirm
-from flask_alchemydumps.database import AlchemyDumpsDatabase
+from flask_alchemydumps.helper.autoclean import BackupAutoClean
+from flask_alchemydumps.helper.backup import Backup
+from flask_alchemydumps.helper.confirm import Confirm
+from flask_alchemydumps.helper.database import AlchemyDumpsDatabase
 
 
 class _AlchemyDumpsConfig(object):
@@ -108,13 +108,27 @@ def restore(date_id):
 
             # restore to the db
             db = alchemy.db()
+            sequence = 0
+            table_name = mapped_class.__tablename__
+            sequence_name = '{}_id_seq'.format(table_name)
             for row in alchemy.parse_data(contents):
                 try:
                     db.session.merge(row)
+                    # updating sequence
+                    sequence = alchemy.get_next_sequence(
+                        sequence_name)
                     db.session.commit()
                 except (IntegrityError, InvalidRequestError):
                     db.session.rollback()
                     fails.append(row)
+            max_id = db.session.execute(
+                "SELECT MAX(id) FROM {};".format(table_name)).fetchone()[0]
+            if not max_id:
+                max_id = sequence
+            if sequence != max_id:
+                db.session.execute(
+                    "SELECT setval('{}', {}+1);".format(
+                        sequence_name, max_id))
 
             # print summary
             status = 'partially' if len(fails) else 'totally'

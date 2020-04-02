@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from flask_alchemydumps.backup import LocalTools
+from flask_alchemydumps.helper.backup import LocalTools
 
 
 # Python 2 and 3 compatibility (mock)
