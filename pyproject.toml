@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Flask-AlchemyDumps"
-version = "0.0.10"
+version = "0.0.11"
 description = "SQLAlchemy backup/dump tool for Flask"
 authors = ["Eduardo Cuducos <cuducos@users.noreply.github.com>"]
 license = "MIT"
