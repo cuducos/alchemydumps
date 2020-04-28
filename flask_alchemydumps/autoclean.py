@@ -1,11 +1,9 @@
-# coding: utf-8
-
 from calendar import isleap, monthrange
 from datetime import date, datetime, timedelta
 from itertools import chain
 
 
-class BackupAutoClean(object):
+class BackupAutoClean:
 
     def __init__(self, dates=None, today=None):
         """
@@ -14,8 +12,8 @@ class BackupAutoClean(object):
         """
         self.dates = sorted(dates, reverse=True) if dates else []
         self.today = today or date.today()
-        self.white_list = list()
-        self.black_list = list()
+        self.white_list = tuple()
+        self.black_list = tuple()
         self.run()  # feed self.white_list & self.black_list
 
     def get_last_month_length(self):
@@ -82,8 +80,8 @@ class BackupAutoClean(object):
             else:
                 backups_older.append(timestamp)
 
-        # feed white  list
-        self.white_list.extend(chain(
+        # feed white list
+        self.white_list = tuple(chain(
             backups_week,
             self.filter_dates(backups_month, 'week'),
             self.filter_dates(backups_year, 'month'),
@@ -91,5 +89,5 @@ class BackupAutoClean(object):
         ))
 
         # feed black list
-        diff_as_list = list(set(self.dates) - set(self.white_list))
-        self.black_list.extend(sorted(diff_as_list, reverse=True))
+        diff_as_tuple = tuple(set(self.dates) - set(self.white_list))
+        self.black_list = tuple(sorted(diff_as_tuple, reverse=True))

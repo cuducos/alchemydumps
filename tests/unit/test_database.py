@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from unittest import TestCase
 
 from flask_alchemydumps.database import AlchemyDumpsDatabase
@@ -15,8 +13,9 @@ class TestSQLAlchemyHelper(TestCase):
 
     def tearDown(self):
         self.db.drop_all()
-        db_file = app.extensions['alchemydumps'].basedir.child('test.db')
-        db_file.remove()
+        db_file = app.extensions['alchemydumps'].basedir / 'test.db'
+        if db_file.exists():
+            db_file.unlink()
 
     def test_mapped_classes(self):
         with app.app_context():

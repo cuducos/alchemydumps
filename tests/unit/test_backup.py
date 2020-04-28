@@ -1,14 +1,10 @@
 from ftplib import error_perm
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest import TestCase
+from unittest.mock import MagicMock, patch
 
-from flask_alchemydumps.backup import Backup, LocalTools
-
-
-# Python 2 and 3 compatibility (mock)
-try:
-    from unittest.mock import MagicMock, patch
-except ImportError:
-    from mock import MagicMock, patch
+from flask_alchemydumps.backup import Backup
 
 
 class TestBackup(TestCase):
@@ -20,51 +16,70 @@ class TestBackup(TestCase):
         'BRA-19940717123000-ITA.gz',
     )
 
-    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.backup.decouple.config')
-    def setUp(self, mock_config, mock_path):
-        # (respectively: FTP server, FTP # user, FTP password, FTP path, local
-        # directory for backups and file prefix)
-        mock_config.side_effect = (None, None, None, None, 'foobar', 'BRA')
+    def setUp(self, mock_config):
+        self.tmp = TemporaryDirectory()
+
+        # Respectively: FTP server, FTP user, FTP password, FTP path, local
+        # directory for backups and file prefix
+        mock_config.side_effect = (None, None, None, None, self.tmp.name, 'BRA')
+
+        # main objects
         self.backup = Backup()
-        self.backup.files = self.FILES
+        self.backup.files = tuple(self.files)
 
-    @patch.object(LocalTools, 'normalize_path')
-    def test_get_timestamps(self, mock_path):
-        expected = [
-            '19940704123000',
-            '19940709163000',
-            '19940713123000',
-            '19940717123000'
-        ]
-        self.assertEqual(expected, self.backup.get_timestamps())
+    def tearDown(self):
+        self.tmp.cleanup()
 
-    @patch.object(LocalTools, 'normalize_path')
-    def test_by_timestamp(self, mock_path):
-        expected = ['BRA-19940717123000-ITA.gz']
-        self.assertEqual(expected, list(self.backup.by_timestamp('19940717123000')))
+    @property
+    def files(self):
+        for name in self.FILES:
+            yield Path(self.tmp.name) / name
 
-    @patch.object(LocalTools, 'normalize_path')
-    def test_valid(self, mock_path):
+    def test_get_timestamps(self):
+        self.assertEqual(
+            sorted((
+                '19940704123000',
+                '19940709163000',
+                '19940713123000',
+                '19940717123000'
+            )),
+            sorted(self.backup.get_timestamps())
+        )
+
+    def test_by_timestamp(self):
+        self.assertEqual(
+            (Path(self.tmp.name) / 'BRA-19940717123000-ITA.gz',),
+            tuple(self.backup.by_timestamp('19940717123000'))
+        )
+
+    def test_valid(self):
         self.assertTrue(self.backup.valid('19940704123000'))
         self.assertFalse(self.backup.valid('19980712210000'))
 
-    @patch.object(LocalTools, 'normalize_path')
-    def test_get_name(self, mock_path):
-        expected = 'BRA-{}-GER.gz'.format(self.backup.target.TIMESTAMP)
-        self.assertEqual(expected, self.backup.get_name('GER'))
+    def test_get_name(self):
+        self.assertEqual(
+            f'BRA-{self.backup.target.TIMESTAMP}-GER.gz',
+            self.backup.get_name('GER')
+        )
 
 
 class TestBackupFTPAttemps(TestCase):
 
-    # decouple.config mock side effects (respectively: FTP server, FTP
-    # user, FTP password, FTP path, local directory for backups and file prefix
-    CONFIG = ('server', 'user', None, 'foobar', 'foobar', 'bkp')
+    def setUp(self):
+        self.tmp = TemporaryDirectory()
+
+        # Respectively: FTP server, FTP user, FTP password, FTP path, local
+        # directory for backups and file prefix
+        self.config = ('server', 'user', None, 'foobar', self.tmp.name, 'bkp')
+
+    def tearDown(self):
+        self.tmp.cleanup()
 
     @patch('flask_alchemydumps.backup.ftplib.FTP')
     @patch('flask_alchemydumps.backup.decouple.config')
     def test_successful_connection(self, mock_config, mock_ftp):
-        mock_config.side_effect = self.CONFIG
+        mock_config.side_effect = self.config
         mock_ftp.return_value = MagicMock()
         mock_ftp.return_value.cwd.return_value = '250 foobar'
 
@@ -75,11 +90,10 @@ class TestBackupFTPAttemps(TestCase):
         mock_ftp.return_value.cwd.assert_called_once_with('foobar')
         self.assertTrue(backup.ftp)
 
-    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.backup.ftplib.FTP')
     @patch('flask_alchemydumps.backup.decouple.config')
-    def test_unsuccessful_connection(self, mock_config, mock_ftp, mock_path):
-        mock_config.side_effect = self.CONFIG
+    def test_unsuccessful_connection(self, mock_config, mock_ftp):
+        mock_config.side_effect = self.config
         mock_ftp.side_effect = error_perm
 
         backup = Backup()
@@ -89,11 +103,10 @@ class TestBackupFTPAttemps(TestCase):
         self.assertFalse(mock_ftp.return_value.cwd.called)
         self.assertFalse(backup.ftp)
 
-    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.backup.ftplib.FTP')
     @patch('flask_alchemydumps.backup.decouple.config')
-    def test_ftp_with_wrong_path(self, mock_config, mock_ftp, mock_path):
-        mock_config.side_effect = self.CONFIG
+    def test_ftp_with_wrong_path(self, mock_config, mock_ftp):
+        mock_config.side_effect = self.config
         mock_ftp.return_value = MagicMock()
         mock_ftp.return_value.cwd.return_value = '404 foobar'
 
@@ -104,11 +117,10 @@ class TestBackupFTPAttemps(TestCase):
         mock_ftp.return_value.cwd.assert_called_once_with('foobar')
         self.assertFalse(backup.ftp)
 
-    @patch.object(LocalTools, 'normalize_path')
     @patch('flask_alchemydumps.backup.ftplib.FTP')
     @patch('flask_alchemydumps.backup.decouple.config')
-    def test_close_connection(self, mock_config, mock_ftp, mock_path):
-        mock_config.side_effect = self.CONFIG
+    def test_close_connection(self, mock_config, mock_ftp):
+        mock_config.side_effect = self.config
         mock_ftp.return_value = MagicMock()
         mock_ftp.return_value.cwd.return_value = '250 foobar'
 

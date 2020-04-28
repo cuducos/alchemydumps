@@ -1,8 +1,5 @@
-# coding: utf-8
-
-from __future__ import absolute_import, print_function
-
 import os
+from functools import partial
 
 import click
 from flask.cli import with_appcontext
@@ -12,6 +9,10 @@ from flask_alchemydumps.autoclean import BackupAutoClean
 from flask_alchemydumps.backup import Backup
 from flask_alchemydumps.confirm import Confirm
 from flask_alchemydumps.database import AlchemyDumpsDatabase
+
+
+success = partial(click.secho, fg='green')
+error = partial(click.secho, fg='red')
 
 
 @click.group()
@@ -34,12 +35,9 @@ def create():
         full_path = backup.target.create_file(name, data[class_name])
         rows = len(alchemy.parse_data(data[class_name]))
         if full_path:
-            print('==> {} rows from {} saved as {}'.format(rows,
-                                                           class_name,
-                                                           full_path))
+            success(f'==> {rows} rows from {class_name} saved as {full_path}')
         else:
-            print('==> Error creating {} at {}'.format(name,
-                                                       backup.target.path))
+            error(f'==> Error creating {name} at {backup.target.path}')
     backup.close_ftp()
 
 
@@ -53,7 +51,7 @@ def history():
 
     # if no files
     if not backup.files:
-        print('==> No backups found at {}.'.format(backup.target.path))
+        click.echo(f'==> No backups found at {backup.target.path}.')
         return None
 
     # create output
@@ -62,10 +60,10 @@ def history():
     for output in groups:
         if output['files']:
             date_formated = backup.target.parse_timestamp(output['id'])
-            print('\n==> ID: {} (from {})'.format(output['id'], date_formated))
+            click.echo(f"\n==> ID: {output['id']} (from {date_formated})")
             for file_name in output['files']:
-                print('    {}{}'.format(backup.target.path, file_name))
-    print('')
+                click.echo(f'    {backup.target.path}{file_name}')
+    click.echo('')
     backup.close_ftp()
 
 
@@ -88,7 +86,9 @@ def restore(date_id):
     for mapped_class in alchemy.get_mapped_classes():
         class_name = mapped_class.__name__
         name = backup.get_name(class_name, date_id)
-        if os.path.exists(os.path.join(backup.target.path, name)):
+        path = backup.target.path / name
+
+        if path.exists():
 
             # read file contents
             contents = backup.target.read_file(name)
@@ -106,13 +106,16 @@ def restore(date_id):
 
             # print summary
             status = 'partially' if len(fails) else 'totally'
-            print('==> {} {} restored.'.format(name, status))
+            success(f'==> {name} {status} restored.')
             for f in fails:
-                print('    Restore of {} failed.'.format(f))
+                error(f'    Restore of {f} failed.')
         else:
             os.system('ls alchemydumps-backups')
-            msg = '==> No file found for {} ({}{} does not exist).'
-            print(msg.format(class_name, backup.target.path, name))
+            msg = (
+                f'==> No file found for {class_name} '
+                f'({backup.target.path}{name} does not exist).'
+            )
+            error(msg)
 
 
 @alchemydumps.command()
@@ -127,7 +130,7 @@ def restore(date_id):
     '-y',
     '--assume-yes',
     'assume_yes',
-    default=False,
+    is_flag=True,
     help='Assume `yes` for all prompts'
 )
 @with_appcontext
@@ -140,16 +143,16 @@ def remove(date_id, assume_yes=False):
 
         # List files to be deleted
         delete_list = tuple(backup.by_timestamp(date_id))
-        print('==> Do you want to delete the following files?')
+        click.echo('==> Do you want to delete the following files?')
         for name in delete_list:
-            print('    {}{}'.format(backup.target.path, name))
+            click.echo(f'    {backup.target.path}{name}')
 
         # delete
         confirm = Confirm(assume_yes)
         if confirm.ask():
             for name in delete_list:
                 backup.target.delete_file(name)
-                print('    {} deleted.'.format(name))
+                click.echo(f'    {name} deleted.')
     backup.close_ftp()
 
 
@@ -158,7 +161,7 @@ def remove(date_id, assume_yes=False):
     '-y',
     '--assume-yes',
     'assume_yes',
-    default=False,
+    is_flag=True,
     help='Assume `yes` for all prompts'
 )
 @with_appcontext
@@ -175,7 +178,7 @@ def autoclean(assume_yes=False):
     backup = Backup()
     backup.files = tuple(backup.target.get_files())
     if not backup.files:
-        print('==> No backups found.')
+        click.echo('==> No backups found.')
         return None
 
     # get black and white list
@@ -183,25 +186,25 @@ def autoclean(assume_yes=False):
     white_list = cleaning.white_list
     black_list = cleaning.black_list
     if not black_list:
-        print('==> No backup to be deleted.')
+        click.echo('==> No backup to be deleted.')
         return None
 
     # print the list of files to be kept
-    print('\n==> {} backups will be kept:'.format(len(white_list)))
+    click.echo(f'\n==> {len(white_list)} backups will be kept:')
     for date_id in white_list:
         date_formated = backup.target.parse_timestamp(date_id)
-        print('\n    ID: {} (from {})'.format(date_id, date_formated))
+        click.echo(f'\n    ID: {date_id} (from {date_formated})')
         for f in backup.by_timestamp(date_id):
-            print('    {}{}'.format(backup.target.path, f))
+            click.echo(f'    {backup.target.path}{f}')
 
     # print the list of files to be deleted
     delete_list = list()
-    print('\n==> {} backups will be deleted:'.format(len(black_list)))
+    click.echo(f'\n==> {len(black_list)} backups will be deleted:')
     for date_id in black_list:
         date_formated = backup.target.parse_timestamp(date_id)
-        print('\n    ID: {} (from {})'.format(date_id, date_formated))
+        click.echo(f'\n    ID: {date_id} (from {date_formated})')
         for f in backup.by_timestamp(date_id):
-            print('    {}{}'.format(backup.target.path, f))
+            click.echo(f'    {backup.target.path}{f}')
             delete_list.append(f)
 
     # delete
@@ -209,5 +212,5 @@ def autoclean(assume_yes=False):
     if confirm.ask():
         for name in delete_list:
             backup.target.delete_file(name)
-            print('    {} deleted.'.format(name))
+            click.echo(f'    {name} deleted.')
     backup.close_ftp()

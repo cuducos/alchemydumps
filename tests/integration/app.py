@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from flask import Flask
 from flask_alchemydumps import AlchemyDumps
 from flask_sqlalchemy import SQLAlchemy

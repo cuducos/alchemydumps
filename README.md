@@ -276,9 +276,7 @@ Output:
 
 ## Requirements & Dependencies
 
-**AlchemyDumps** is tested and should work with Python 3 and 2.7+.
-
-**AlchemyDumps** was designed to work together with [Flask](http://flask.pocoo.org) applications that uses [SQLAlchemy](http://www.sqlalchemy.org/). Thus, these packages are essential requirements. **AlchemyDumps** also uses [Unipath](https://github.com/mikeorr/Unipath) package. All these packages, if needed, will be installed once you install **AlchemyDumps**.
+**AlchemyDumps** is tested and should work with Python 3.6+.
 
 ## Tests
 

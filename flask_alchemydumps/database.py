@@ -1,10 +1,8 @@
-# coding: utf-8
-
 from flask import current_app
 from sqlalchemy.ext.serializer import dumps, loads
 
 
-class AlchemyDumpsDatabase(object):
+class AlchemyDumpsDatabase:
 
     def __init__(self):
         self.do_not_backup = list()

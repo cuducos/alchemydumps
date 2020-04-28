@@ -1,92 +1,62 @@
-import os
+from pathlib import Path
 from unittest import TestCase
+from unittest.mock import patch
 
 from flask_alchemydumps.backup import LocalTools
 
 
-# Python 2 and 3 compatibility (mock)
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
-
 class TestLocalTools(TestCase):
-
     def setUp(self):
-        current_dir = os.path.abspath(os.path.curdir)
-        self.backup_dir = os.path.join(current_dir, 'foobar')
+        self.backup_dir = '.test-local-tools/'
+        self.backup_path = Path(self.backup_dir).absolute()
 
-    @patch('flask_alchemydumps.backup.os.path.exists')
-    @patch('flask_alchemydumps.backup.os.mkdir')
-    def test_normalize_path(self, mock_mkdir, mock_exists):
-        mock_exists.return_value = False
-        backup = LocalTools(self.backup_dir)
-        mock_mkdir.assert_called_once_with(self.backup_dir)
-        self.assertEqual(self.backup_dir + os.sep, backup.path)
-
-    @patch('flask_alchemydumps.backup.os.path.exists')
-    @patch('flask_alchemydumps.backup.os.mkdir')
-    @patch('flask_alchemydumps.backup.os.listdir')
-    @patch('flask_alchemydumps.backup.os.path.isfile')
-    def test_get_files(self, mock_isfile, mock_listdir, mock_mkdir, mock_exists):
-        mock_exists.return_value = False
-        files = (
-            'BRA-19940704123000-USA.gz',
-            'BRA-19940709163000-NED.gz',
-            'BRA-19940713123XXX-SWE.gz',
-            'BRA-19940717123000-ITA.gz',
+    @patch.object(Path, 'mkdir')
+    @patch.object(Path, 'is_file')
+    @patch.object(Path, 'glob')
+    def test_get_files(self, mock_glob, mock_is_file, _mock_mkdir):
+        mock_glob.return_value = (
+            self.backup_path / 'BRA-19940704123000-USA.gz',
+            self.backup_path / 'BRA-19940709163000-NED.gz',
+            self.backup_path / 'BRA-19940713123XXX-SWE.gz',
+            self.backup_path / 'BRA-19940717123000-ITA.gz',
         )
-        mock_listdir.return_value = iter(files)
-        mock_isfile.side_effect = (True, True, True, False)
-        backup = LocalTools(self.backup_dir)
-        files = tuple(backup.get_files())
+        mock_is_file.side_effect = (True, True, True, False)
         expected = (
-            'BRA-19940704123000-USA.gz',
-            'BRA-19940709163000-NED.gz',
+            self.backup_path / 'BRA-19940704123000-USA.gz',
+            self.backup_path / 'BRA-19940709163000-NED.gz',
         )
-        mock_listdir.assert_called_once_with(backup.path)
-        self.assertEqual(4, mock_isfile.call_count)
-        self.assertEqual(expected, files)
-
-    @patch('flask_alchemydumps.backup.os.path.exists')
-    @patch('flask_alchemydumps.backup.os.mkdir')
-    @patch('flask_alchemydumps.backup.gzip.open')
-    def test_create_file(self, mock_open, mock_mkdir, mock_exists):
-        mock_exists.return_value = False
-        mock_handler = mock_open.return_value.__enter__.return_value
-
-        contents = '42'.encode()
-        file_path = os.path.join(self.backup_dir, 'foobar.gz')
-
         backup = LocalTools(self.backup_dir)
-        created = backup.create_file('foobar.gz', contents)
-        mock_open.assert_called_once_with(file_path, 'wb')
-        mock_handler.write.assert_called_once_with(contents)
-        self.assertEqual(file_path, created)
+        self.assertEqual(expected, tuple(backup.get_files()))
+        mock_glob.assert_called_once_with('*')
 
-    @patch('flask_alchemydumps.backup.os.path.exists')
-    @patch('flask_alchemydumps.backup.os.mkdir')
+    @patch.object(Path, 'mkdir')
+    @patch.object(Path, 'exists')
     @patch('flask_alchemydumps.backup.gzip.open')
-    def test_read_file(self, mock_open, mock_mkdir, mock_exists):
+    def test_create_file(self, mock_open, mock_exists, _mock_mkdir):
         mock_exists.return_value = False
-        mock_handler = mock_open.return_value.__enter__.return_value
+        path = self.backup_path / 'foobar.gz'
+        backup = LocalTools(self.backup_dir)
+        created = backup.create_file('foobar.gz', b'42')
+        mock_open.assert_called_once_with(path, 'wb')
+        mock_open.return_value.__enter__.return_value.write.assert_called_once_with(b'42')
+        self.assertEqual(path, created)
 
-        file_path = os.path.join(self.backup_dir, 'foobar.gz')
-
+    @patch.object(Path, 'mkdir')
+    @patch.object(Path, 'exists')
+    @patch('flask_alchemydumps.backup.gzip.open')
+    def test_read_file(self, mock_open, mock_exists, _mock_mkdir):
+        mock_exists.return_value = False
+        path = self.backup_path / 'foobar.gz'
         backup = LocalTools(self.backup_dir)
         backup.read_file('foobar.gz')
-        mock_open.assert_called_once_with(file_path, 'rb')
-        mock_handler.read.assert_called_once_with()
+        mock_open.assert_called_once_with(path, 'rb')
+        mock_open.return_value.__enter__.return_value.read.assert_called_once_with()
 
-    @patch('flask_alchemydumps.backup.os.path.exists')
-    @patch('flask_alchemydumps.backup.os.mkdir')
-    @patch('flask_alchemydumps.backup.os.remove')
-    def test_delete_file(self, mock_remove, mock_mkdir, mock_exists):
+    @patch.object(Path, 'mkdir')
+    @patch.object(Path, 'exists')
+    @patch.object(Path, 'unlink')
+    def test_delete_file(self, mock_unlink, mock_exists, _mock_mkdir):
         mock_exists.return_value = False
-
-        file_path = os.path.join(self.backup_dir, 'foobar.gz')
-
         backup = LocalTools(self.backup_dir)
         backup.delete_file('foobar.gz')
-        mock_remove.assert_called_once_with(file_path)
+        mock_unlink.assert_called_once_with()
