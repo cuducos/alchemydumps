@@ -1,39 +1,6 @@
-# Compiled python modules.
-**/*.py[cod]
-**/__pycache__/
-
-# Setuptools distribution folder.
-/build
-/dist
-
-# Python eggs
-**/*.egg-info
-**/*.eggs
-
-# tests environment
-*.db
+*.egg-info/
+*.pyc
 .coverage
 .python-version
 .tox/
-cover/
-
-# dev environment
-.env
-.floo
-.flooignore
-.idea
-.ropeproject
-
-# other system, editor and ide files
-*.*~
-*.swo
-*.swp
-*~
-.DS_Store
-.DS_Store?
-.Spotlight-V100
-.Trashes
-._*
-.vagrant
-Thumbs.db
-ehthumbs.db
+__pycache__/

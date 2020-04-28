@@ -293,27 +293,3 @@ poetry run nosetests
 ```
 
 If you wanna cover all supported Python version, you need them installed and available via [`pyenv`](https://github.com/pyenv/pyenv). Then just `poetry run tox`.
-
-## Contributing
-
-You can [report issues](https://github.com/cuducos/alchemydumps/issues) or:
-
-* Fork this repo
-* Create a new branch: `git checkout -b my-new-feature`
-* Commit your changes: `git add -A . && commit -m 'Add some feature'`
-* Push to the branch: `git push origin my-new-feature`
-* And create new `pull request`
-
-### Contributors
-
-Thanks for the pull requests, reported issues, feedback and support:
-
-* [Allana](https://github.com/allanaari)
-* [blinzelaffe](https://github.com/blinzelaffe)
-* [Brian Baumhover](https://github.com/baumatron)
-* [Italo Maia](https://github.com/italomaia)
-* [Kirill Sumorokov](https://github.com/clayman74)
-* [Rodolfo Carvalho](https://github.com/rscarvalho)
-* [spikergit1](https://github.com/spikergit1)
-* [Viktor Likin](https://github.com/vlikin)
-* [Walter](https://github.com/antwal)
