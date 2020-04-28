@@ -280,11 +280,18 @@ Output:
 
 ## Tests
 
-If you wanna run the tests for the current Python vertion:
+If you wanna run the tests for the current Python version:
 
 ```console
 poetry install
 poetry run nosetests
+```
+
+We also use some style and quality checkers:
+
+```console
+poetry run black . --check
+poetry run flake8 flask_alchemydumps/ tests/
 ```
 
 If you wanna cover all supported Python version, you need them installed and available via [`pyenv`](https://github.com/pyenv/pyenv). Then just `poetry run tox`.

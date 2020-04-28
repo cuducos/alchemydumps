@@ -4,7 +4,6 @@ from itertools import chain
 
 
 class BackupAutoClean:
-
     def __init__(self, dates=None, today=None):
         """
         :param dates: list of date ids (in string format)
@@ -38,16 +37,16 @@ class BackupAutoClean:
         :param period: a string for comparison (week, month or year)
         :return: list of dates containing the most recent dates of each period
         """
-        reference = datetime.strftime(self.today, '%Y%m%d%H%M%S')
+        reference = datetime.strftime(self.today, "%Y%m%d%H%M%S")
         method_mapping = {
-            'week': lambda obj: getattr(obj, 'isocalendar')()[1],
-            'month': lambda obj: getattr(obj, 'month'),
-            'year': lambda obj: getattr(obj, 'year')
+            "week": lambda obj: getattr(obj, "isocalendar")()[1],
+            "month": lambda obj: getattr(obj, "month"),
+            "year": lambda obj: getattr(obj, "year"),
         }
         for as_string in dates:
-            as_date = datetime.strptime(as_string, '%Y%m%d%H%M%S')
+            as_date = datetime.strptime(as_string, "%Y%m%d%H%M%S")
             comparison = method_mapping.get(period)(as_date)
-            reference_as_date = datetime.strptime(reference, '%Y%m%d%H%M%S')
+            reference_as_date = datetime.strptime(reference, "%Y%m%d%H%M%S")
             if comparison != method_mapping.get(period)(reference_as_date):
                 reference = as_string
                 yield as_string
@@ -69,7 +68,7 @@ class BackupAutoClean:
         backups_year = list()
         backups_older = list()
         for timestamp in self.dates:
-            datetime_ = datetime.strptime(timestamp, '%Y%m%d%H%M%S')
+            datetime_ = datetime.strptime(timestamp, "%Y%m%d%H%M%S")
             date_ = date(datetime_.year, datetime_.month, datetime_.day)
             if date_ >= last_w:
                 backups_week.append(timestamp)
@@ -81,12 +80,14 @@ class BackupAutoClean:
                 backups_older.append(timestamp)
 
         # feed white list
-        self.white_list = tuple(chain(
-            backups_week,
-            self.filter_dates(backups_month, 'week'),
-            self.filter_dates(backups_year, 'month'),
-            self.filter_dates(backups_older, 'year')
-        ))
+        self.white_list = tuple(
+            chain(
+                backups_week,
+                self.filter_dates(backups_month, "week"),
+                self.filter_dates(backups_year, "month"),
+                self.filter_dates(backups_older, "year"),
+            )
+        )
 
         # feed black list
         diff_as_tuple = tuple(set(self.dates) - set(self.white_list))

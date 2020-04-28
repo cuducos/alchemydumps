@@ -3,14 +3,13 @@ from sqlalchemy.ext.serializer import dumps, loads
 
 
 class AlchemyDumpsDatabase:
-
     def __init__(self):
         self.do_not_backup = list()
         self.models = list()
 
     @staticmethod
     def db():
-        return current_app.extensions['alchemydumps'].db
+        return current_app.extensions["alchemydumps"].db
 
     def get_mapped_classes(self):
         """Gets a list of SQLALchemy mapped classes"""

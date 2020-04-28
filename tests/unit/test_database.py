@@ -6,14 +6,13 @@ from ..integration.app import Post, SomeControl, User, app, db
 
 
 class TestSQLAlchemyHelper(TestCase):
-
     def setUp(self):
         self.db = db
         self.db.create_all()
 
     def tearDown(self):
         self.db.drop_all()
-        db_file = app.extensions['alchemydumps'].basedir / 'test.db'
+        db_file = app.extensions["alchemydumps"].basedir / "test.db"
         if db_file.exists():
             db_file.unlink()
 
@@ -30,10 +29,10 @@ class TestSQLAlchemyHelper(TestCase):
         with app.app_context():
 
             # control data
-            user = User(email=u'me@example.etc')
-            post1 = Post(title=u'Post 1', content=u'Lorem...', author_id=1)
-            post2 = Post(title=u'Post 2', content=u'Ipsum...', author_id=1)
-            control = SomeControl(uuid='1')
+            user = User(email=u"me@example.etc")
+            post1 = Post(title=u"Post 1", content=u"Lorem...", author_id=1)
+            post2 = Post(title=u"Post 2", content=u"Ipsum...", author_id=1)
+            control = SomeControl(uuid="1")
 
             # feed user table
             self.db.session.add(user)
@@ -53,9 +52,9 @@ class TestSQLAlchemyHelper(TestCase):
             data = alchemy.get_data()
 
             # parse data
-            parsed_user = alchemy.parse_data(data['User'])
-            parsed_posts = alchemy.parse_data(data['Post'])
-            parsed_control = alchemy.parse_data(data['SomeControl'])
+            parsed_user = alchemy.parse_data(data["User"])
+            parsed_posts = alchemy.parse_data(data["Post"])
+            parsed_control = alchemy.parse_data(data["SomeControl"])
 
             # assert length
             self.assertEqual(len(parsed_user), 1)

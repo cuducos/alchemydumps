@@ -2,7 +2,6 @@ import click
 
 
 class Confirm:
-
     def __init__(self, assume_yes=False):
         self.assume_yes = assume_yes
 
@@ -11,4 +10,4 @@ class Confirm:
             return True
 
         click.echo('\n==> Press "Y" to confirm, or anything else to abort: ')
-        return click.getchar().lower() == 'y'
+        return click.getchar().lower() == "y"

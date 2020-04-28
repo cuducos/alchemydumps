@@ -11,8 +11,8 @@ from flask_alchemydumps.confirm import Confirm
 from flask_alchemydumps.database import AlchemyDumpsDatabase
 
 
-success = partial(click.secho, fg='green')
-error = partial(click.secho, fg='red')
+success = partial(click.secho, fg="green")
+error = partial(click.secho, fg="red")
 
 
 @click.group()
@@ -35,9 +35,9 @@ def create():
         full_path = backup.target.create_file(name, data[class_name])
         rows = len(alchemy.parse_data(data[class_name]))
         if full_path:
-            success(f'==> {rows} rows from {class_name} saved as {full_path}')
+            success(f"==> {rows} rows from {class_name} saved as {full_path}")
         else:
-            error(f'==> Error creating {name} at {backup.target.path}')
+            error(f"==> Error creating {name} at {backup.target.path}")
     backup.close_ftp()
 
 
@@ -51,29 +51,29 @@ def history():
 
     # if no files
     if not backup.files:
-        click.echo(f'==> No backups found at {backup.target.path}.')
+        click.echo(f"==> No backups found at {backup.target.path}.")
         return None
 
     # create output
     timestamps = backup.get_timestamps()
-    groups = [{'id': i, 'files': backup.by_timestamp(i)} for i in timestamps]
+    groups = [{"id": i, "files": backup.by_timestamp(i)} for i in timestamps]
     for output in groups:
-        if output['files']:
-            date_formated = backup.target.parse_timestamp(output['id'])
+        if output["files"]:
+            date_formated = backup.target.parse_timestamp(output["id"])
             click.echo(f"\n==> ID: {output['id']} (from {date_formated})")
-            for file_name in output['files']:
-                click.echo(f'    {backup.target.path}{file_name}')
-    click.echo('')
+            for file_name in output["files"]:
+                click.echo(f"    {backup.target.path}{file_name}")
+    click.echo("")
     backup.close_ftp()
 
 
 @alchemydumps.command()
 @click.option(
-    '-d',
-    '--date',
-    'date_id',
+    "-d",
+    "--date",
+    "date_id",
     default=False,
-    help='The date part of a file from the AlchemyDumps folder'
+    help="The date part of a file from the AlchemyDumps folder",
 )
 @with_appcontext
 def restore(date_id):
@@ -105,33 +105,33 @@ def restore(date_id):
                     fails.append(row)
 
             # print summary
-            status = 'partially' if len(fails) else 'totally'
-            success(f'==> {name} {status} restored.')
+            status = "partially" if len(fails) else "totally"
+            success(f"==> {name} {status} restored.")
             for f in fails:
-                error(f'    Restore of {f} failed.')
+                error(f"    Restore of {f} failed.")
         else:
-            os.system('ls alchemydumps-backups')
+            os.system("ls alchemydumps-backups")
             msg = (
-                f'==> No file found for {class_name} '
-                f'({backup.target.path}{name} does not exist).'
+                f"==> No file found for {class_name} "
+                f"({backup.target.path}{name} does not exist)."
             )
             error(msg)
 
 
 @alchemydumps.command()
 @click.option(
-    '-d',
-    '--date',
-    'date_id',
+    "-d",
+    "--date",
+    "date_id",
     default=False,
-    help='The date part of a file from the AlchemyDumps folder'
+    help="The date part of a file from the AlchemyDumps folder",
 )
 @click.option(
-    '-y',
-    '--assume-yes',
-    'assume_yes',
+    "-y",
+    "--assume-yes",
+    "assume_yes",
     is_flag=True,
-    help='Assume `yes` for all prompts'
+    help="Assume `yes` for all prompts",
 )
 @with_appcontext
 def remove(date_id, assume_yes=False):
@@ -143,26 +143,26 @@ def remove(date_id, assume_yes=False):
 
         # List files to be deleted
         delete_list = tuple(backup.by_timestamp(date_id))
-        click.echo('==> Do you want to delete the following files?')
+        click.echo("==> Do you want to delete the following files?")
         for name in delete_list:
-            click.echo(f'    {backup.target.path}{name}')
+            click.echo(f"    {backup.target.path}{name}")
 
         # delete
         confirm = Confirm(assume_yes)
         if confirm.ask():
             for name in delete_list:
                 backup.target.delete_file(name)
-                click.echo(f'    {name} deleted.')
+                click.echo(f"    {name} deleted.")
     backup.close_ftp()
 
 
 @alchemydumps.command()
 @click.option(
-    '-y',
-    '--assume-yes',
-    'assume_yes',
+    "-y",
+    "--assume-yes",
+    "assume_yes",
     is_flag=True,
-    help='Assume `yes` for all prompts'
+    help="Assume `yes` for all prompts",
 )
 @with_appcontext
 def autoclean(assume_yes=False):
@@ -178,7 +178,7 @@ def autoclean(assume_yes=False):
     backup = Backup()
     backup.files = tuple(backup.target.get_files())
     if not backup.files:
-        click.echo('==> No backups found.')
+        click.echo("==> No backups found.")
         return None
 
     # get black and white list
@@ -186,25 +186,25 @@ def autoclean(assume_yes=False):
     white_list = cleaning.white_list
     black_list = cleaning.black_list
     if not black_list:
-        click.echo('==> No backup to be deleted.')
+        click.echo("==> No backup to be deleted.")
         return None
 
     # print the list of files to be kept
-    click.echo(f'\n==> {len(white_list)} backups will be kept:')
+    click.echo(f"\n==> {len(white_list)} backups will be kept:")
     for date_id in white_list:
         date_formated = backup.target.parse_timestamp(date_id)
-        click.echo(f'\n    ID: {date_id} (from {date_formated})')
+        click.echo(f"\n    ID: {date_id} (from {date_formated})")
         for f in backup.by_timestamp(date_id):
-            click.echo(f'    {backup.target.path}{f}')
+            click.echo(f"    {backup.target.path}{f}")
 
     # print the list of files to be deleted
     delete_list = list()
-    click.echo(f'\n==> {len(black_list)} backups will be deleted:')
+    click.echo(f"\n==> {len(black_list)} backups will be deleted:")
     for date_id in black_list:
         date_formated = backup.target.parse_timestamp(date_id)
-        click.echo(f'\n    ID: {date_id} (from {date_formated})')
+        click.echo(f"\n    ID: {date_id} (from {date_formated})")
         for f in backup.by_timestamp(date_id):
-            click.echo(f'    {backup.target.path}{f}')
+            click.echo(f"    {backup.target.path}{f}")
             delete_list.append(f)
 
     # delete
@@ -212,5 +212,5 @@ def autoclean(assume_yes=False):
     if confirm.ask():
         for name in delete_list:
             backup.target.delete_file(name)
-            click.echo(f'    {name} deleted.')
+            click.echo(f"    {name} deleted.")
     backup.close_ftp()
