@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "Flask-AlchemyDumps"
+version = "0.0.11"
+description = "SQLAlchemy backup/dump tool for Flask"
+authors = ["Eduardo Cuducos <cuducos@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/cuducos/alchemydumps"
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'License :: OSI Approved :: MIT License',
+    'Framework :: Flask',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
+    'Intended Audience :: Developers',
+    'Topic :: Database',
+    'Topic :: System :: Archiving :: Backup',
+    'Topic :: Utilities'
+]
+keywords = [
+    "backup",
+    "sqlalchemy",
+    "flask",
+    "restore",
+    "ftp"
+]
+exclude = ["tests/"]
+
+[tool.poetry.dependencies]
+python = "^3.5"
+Flask-SQLAlchemy = "^2.4.1"
+Flask-Script = "^2.0.6"
+Flask = "0.10.1"
+SQLAlchemy = "^1.3.16"
+Unipath = "^1.1"
+python-decouple = "^3.3"
+
+[tool.poetry.dev-dependencies]
+nose = "^1.3.7"
+tox = "^3.14.6"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
