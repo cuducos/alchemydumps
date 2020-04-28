@@ -345,9 +345,3 @@ Thanks for the pull requests, reported issues, feedback and support:
     * Proper message when ID is not found in restore and delete commands.
     * Avoid breaking the process when get_id() fails.
     * Minor code improvements.
-
-## License
-
-Copyright (c) 2015 Eduardo Cuducos.
-
-Licensed under the [MIT License](http://opensource.org/licenses/MIT).
