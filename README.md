@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/cuducos/alchemydumps/badge.svg?branch=master)](https://coveralls.io/github/cuducos/alchemydumps?branch=master)
 
 
-Do you use [Flask](http://flask.pocoo.org>) with [SQLAlchemy](http://www.sqlalchemy.org/) and [Flask-Script](http://flask-script.readthedocs.org/) ? Wow, what a coincidence!
+Do you use [Flask](http://flask.pocoo.org>) with [SQLAlchemy](http://www.sqlalchemy.org/)? Wow, what a coincidence!
 
 This package lets you backup and restore all your data using [SQLAlchemy dumps() method](http://docs.sqlalchemy.org/en/latest/core/serializer.html).
 
@@ -24,14 +24,13 @@ Then pass your Flask application and SQLALchemy database to it.
 
 For example:
 
-* The ***second line*** imports the objects from the package.
-* The ***last two lines*** instantiate and add AlchemyDumps to the *Flask-Script manager*.
+* The ***second line*** imports the object from the package.
+* The ***last line*** instantiates `AlchemyDumps` for your app and database.
 
 ```python
 from flask import Flask
-from flask.ext.alchemydumps import AlchemyDumps, AlchemyDumpsCommand
-from flask.ext.script import Manager
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_alchemydumps import AlchemyDumps
+from flask_sqlalchemy import SQLAlchemy
 
 # init Flask
 app = Flask(__name__)
@@ -39,11 +38,9 @@ app = Flask(__name__)
 # init SQLAlchemy and Flask-Script
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 db = SQLAlchemy(app)
-manager = Manager(app)
 
 # init Alchemy Dumps
 alchemydumps = AlchemyDumps(app, db)
-manager.add_command('alchemydumps', AlchemyDumpsCommand)
 ```
 
 ### Remote backup (via FTP)
@@ -281,7 +278,7 @@ Output:
 
 **AlchemyDumps** is tested and should work with Python 3 and 2.7+.
 
-**AlchemyDumps** was designed to work together with [Flask](http://flask.pocoo.org) applications that uses [SQLAlchemy](http://www.sqlalchemy.org/). It runs through the [Flask-Script](http://flask-script.readthedocs.org/) manager. Thus, these packages are essential requirements. **AlchemyDumps** also uses [Unipath](https://github.com/mikeorr/Unipath) package. All these packages, if needed, will be installed once you install **AlchemyDumps**.
+**AlchemyDumps** was designed to work together with [Flask](http://flask.pocoo.org) applications that uses [SQLAlchemy](http://www.sqlalchemy.org/). Thus, these packages are essential requirements. **AlchemyDumps** also uses [Unipath](https://github.com/mikeorr/Unipath) package. All these packages, if needed, will be installed once you install **AlchemyDumps**.
 
 ## Tests
 

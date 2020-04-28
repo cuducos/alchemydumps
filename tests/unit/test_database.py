@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from flask.ext.alchemydumps.database import AlchemyDumpsDatabase
+from flask_alchemydumps.database import AlchemyDumpsDatabase
 
 from ..integration.app import Post, SomeControl, User, app, db
 
