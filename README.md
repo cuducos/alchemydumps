@@ -317,31 +317,3 @@ Thanks for the pull requests, reported issues, feedback and support:
 * [spikergit1](https://github.com/spikergit1)
 * [Viktor Likin](https://github.com/vlikin)
 * [Walter](https://github.com/antwal)
-
-
-## Changelog
-
-* **Version 0.0.10**
-    * Python 3.5 support.
-    * Fix bug related to 250 status in FTP backups (with vsftpd).
-* **Version 0.0.9**
-    * Fix bug related to directory paths in Windows.
-* **Version 0.0.8**
-    * Python 3 support.
-* **Version 0.0.7**
-    * Add support for abstract models.
-* **Version 0.0.6**
-    * Remote backup/restore via FTP.
-    * General code improvements.
-* **Version 0.0.5**
-    * Re-written as a Flask extension.
-    * Built-in Flask app within the test suite.
-* **Version 0.0.4**
-    * Fix bug in the installation process.
-* **Version 0.0.3**
-    * New command to auto-clean backup folder.
-* **Version 0.0.2**
-    * New command: delete a single backup.
-    * Proper message when ID is not found in restore and delete commands.
-    * Avoid breaking the process when get_id() fails.
-    * Minor code improvements.
