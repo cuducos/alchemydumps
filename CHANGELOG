@@ -1,31 +1,43 @@
 # Changelog
 
+* **Version 0.0.12** (Aug 27, 2021)
+    * Fixes subcommand register issue
+
 * **Version 0.0.11** (Apr 28, 2020)
     * Adds support for Flask 1.0
     * Adds support for Pyhton 3.6, 3.7 and 3.8
     * Drops support for Flask older than 1.0
     * Drops support for Python oldr than 3.6
+
 * **Version 0.0.10**
-    * Python 3.5 support.
-    * Fix bug related to 250 status in FTP backups (with vsftpd).
+    * Python 3.5 support
+    * Fix bug related to 250 status in FTP backups (with vsftpd)
+
 * **Version 0.0.9**
-    * Fix bug related to directory paths in Windows.
+    * Fix bug related to directory paths in Windows
+
 * **Version 0.0.8**
-    * Python 3 support.
+    * Python 3 support
+
 * **Version 0.0.7**
-    * Add support for abstract models.
+    * Add support for abstract models
+
 * **Version 0.0.6**
-    * Remote backup/restore via FTP.
-    * General code improvements.
+    * Remote backup/restore via FTP
+    * General code improvements
+
 * **Version 0.0.5**
-    * Re-written as a Flask extension.
-    * Built-in Flask app within the test suite.
+    * Re-written as a Flask extension
+    * Built-in Flask app within the test suite
+
 * **Version 0.0.4**
-    * Fix bug in the installation process.
+    * Fix bug in the installation process
+
 * **Version 0.0.3**
-    * New command to auto-clean backup folder.
+    * New command to auto-clean backup folder
+
 * **Version 0.0.2**
-    * New command: delete a single backup.
-    * Proper message when ID is not found in restore and delete commands.
-    * Avoid breaking the process when get_id() fails.
-    * Minor code improvements.
+    * New command: delete a single backup
+    * Proper message when ID is not found in restore and delete commands
+    * Avoid breaking the process when get_id() fails
+    * Minor code improvements
