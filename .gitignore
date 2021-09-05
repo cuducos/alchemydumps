@@ -1,6 +1,7 @@
 *.egg-info/
 *.pyc
 .coverage
+.idea/
 .python-version
 .tox/
 __pycache__/
