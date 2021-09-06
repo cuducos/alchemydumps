@@ -2,7 +2,7 @@
 
 [![Development Status: Alpha](https://img.shields.io/pypi/status/Flask-AlchemyDumps.svg?style=flat)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
 [![Python Version](https://img.shields.io/pypi/pyversions/Flask-AlchemyDumps.svg)](https://pypi.python.org/pypi/Flask-AlchemyDumps)
-[![GitHub Actions](https://github.com/cuducos/Flask-AlchemyDumps/actions/workflows/tests.yml/badge.svg)](https://github.com/cuducos/Flask-AlchemyDumps/actions/workflows/tests.yml)
+[![GitHub Actions](https://github.com/cuducos/alchemydumps/actions/workflows/tests.yaml/badge.svg)](https://github.com/cuducos/alchemydumps/actions/workflows/tests.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/cuducos/alchemydumps/badge.svg?branch=master)](https://coveralls.io/github/cuducos/alchemydumps?branch=master)
 
 
