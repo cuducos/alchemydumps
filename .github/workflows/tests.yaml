@@ -26,7 +26,6 @@ jobs:
     - name: Install dependencies
       run: |
         .venv/bin/pip install --upgrade pip
-        .venv/bin/poetry add "Flask==${{ matrix.flask-version }}"
         .venv/bin/poetry install
     - name: Run tox
       run: .venv/bin/poetry run tox -e py${{ matrix.python-version }}-flask${{ matrix.flask-version }}
