@@ -13,6 +13,7 @@ classifiers = [
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'Intended Audience :: Developers',
     'Topic :: Database',
     'Topic :: System :: Archiving :: Backup',
@@ -28,7 +29,7 @@ keywords = [
 exclude = ["tests/"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.6.0,<3.10.0"
 Flask = ">=1.0.0"
 Flask-SQLAlchemy = "^2.4.1"
 python-decouple = "^3.3"
