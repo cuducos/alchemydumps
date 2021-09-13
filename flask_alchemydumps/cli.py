@@ -72,7 +72,6 @@ def history():
     "-d",
     "--date",
     "date_id",
-    default=False,
     help="The date part of a file from the AlchemyDumps folder",
 )
 @with_appcontext
@@ -123,7 +122,6 @@ def restore(date_id):
     "-d",
     "--date",
     "date_id",
-    default=False,
     help="The date part of a file from the AlchemyDumps folder",
 )
 @click.option(

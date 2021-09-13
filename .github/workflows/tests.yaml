@@ -12,19 +12,17 @@ jobs:
           - 3.6
         flask-version:
           - 1
+          - 2
+
     name: Python ${{ matrix.python-version }} & Flask ${{ matrix.flask-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
-      run: |
-        python -m venv .venv/
-        .venv/bin/pip install poetry
-    - name: Install dependencies
-      run: |
-        .venv/bin/pip install --upgrade pip
-        .venv/bin/poetry install
+
+    - name: Install tox
+      run: pip install tox
+
     - name: Run tox
-      run: .venv/bin/poetry run tox -e py${{ matrix.python-version }}-flask${{ matrix.flask-version }}
+      run: tox -e py${{ matrix.python-version }}-flask${{ matrix.flask-version }}
