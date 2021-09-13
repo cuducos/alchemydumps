@@ -1,5 +1,8 @@
 # Changelog
 
+* **Version 0.0.13** (Sep 13, 2021)
+    * Adds support to FLask 2 and Python 3.9
+
 * **Version 0.0.12** (Aug 27, 2021)
     * Fixes subcommand register issue
 
