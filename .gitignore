@@ -4,3 +4,4 @@
 .python-version
 .tox/
 __pycache__/
+dist/

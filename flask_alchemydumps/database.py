@@ -35,6 +35,6 @@ class AlchemyDumpsDatabase:
         return data
 
     def parse_data(self, contents):
-        """Loads a dump and convert it into rows """
+        """Loads a dump and convert it into rows"""
         db = self.db()
         return loads(contents, db.metadata, db.session)
